@@ -54,39 +54,47 @@ public final class ArenaHGPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
 
         final SWMPlugin slimePlugin = (SWMPlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
         if (slimePlugin == null) {
             Logger.info("EggwarsCore need slimeworld manager to work");
             return;
         }
-
         CompletableFuture.runAsync(() -> {
-            try {   
+            try {
                 MONGODB.init(this);
-
-                new StartMaps(this, slimePlugin).load();
-                new StartSpawn(this).loadSpawn();
-                new StartPreGameData().loadMap(this);
-                GameManagerThread.startThread();   
-            } catch (Exception e) {
+            } catch(Exception e) {
                 getServer().getScheduler().runTask(this, () -> Logger.error(e));
-                setEnabled(false);
             }
         });
-
-        new StartMessages().load(this);
-        new StartGameData().load(this);
-        new StartKits(this).load();
-        new StartDeaths(this).load(this);
-        new StartSpawn(this).loadItems();
-        new StartLevels(this).load();
-        new StartPreGameData().loadItems(this);
-        new StartSidebar().load(this);
-        new StartEvents(this).load();
+        try {
+            new StartMessages().load(this);
+            new StartGameData().load(this);
+            new StartKits(this).load();
+            new StartDeaths(this).load(this);
+            new StartSpawn(this).loadItems();
+            new StartLevels(this).load();
+            new StartPreGameData().loadItems(this);
+            new StartSidebar().load(this);
+            new StartEvents(this).load();   
+        } catch (Exception e) {
+            Logger.error(e);
+        }
 
         loadCommands();
         registerBasicListeners();
+
+        getServer().getScheduler().runTaskLater(this, () -> {
+            try {
+                new StartMaps(this, slimePlugin).load();
+                new StartSpawn(this).loadSpawn();
+                new StartPreGameData().loadMap(this);
+                GameManagerThread.startThread();  
+            } catch (Exception e) {
+                Logger.error(e);
+            }    
+        }, 20);
     }
 
     private void registerBasicListeners() {

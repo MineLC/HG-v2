@@ -1,7 +1,7 @@
-name: EggwarsCore
+name: ArenaHG
 author: MineLC Developers
 version: 0.0.1
 
 main: lc.minelc.hg.ArenaHGPlugin
-description: EggwarsCore for minelc
+description: ArenaHG for minelc
 depends: [SlimeWorldManager]

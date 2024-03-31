@@ -61,9 +61,9 @@ public final class EntityLocation {
         final String[] split = text.split(",");
 
         return new EntityLocation(
-            Integer.parseInt(split[0]),
-            Integer.parseInt(split[1]),
-            Integer.parseInt(split[2]),
+            Double.parseDouble(split[0]),
+            Double.parseDouble(split[1]),
+            Double.parseDouble(split[2]),
             Float.parseFloat(split[3]),
             Float.parseFloat(split[4])
         );

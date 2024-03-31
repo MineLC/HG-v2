@@ -7,18 +7,15 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.tinylog.Logger;
 
 import lc.minelc.hg.ArenaHGPlugin;
-import lc.minelc.hg.inventory.internal.InventoryCreator;
 import lc.minelc.hg.utils.EntityLocation;
 
 public final class StartPreGameData {
 
     public void loadItems(ArenaHGPlugin plugin) {
         final FileConfiguration config = plugin.loadConfig("items/pregame");
-        final InventoryCreator creator = new InventoryCreator(config);
-
         final boolean addShopSpawnItem = config.getBoolean("add-shop-spawn-item");
 
-        PregameStorage.update(new PregameStorage(null, addShopSpawnItem, creator.create("select-team")));
+        PregameStorage.update(new PregameStorage(null, addShopSpawnItem));
     }
 
     public void loadMap(final ArenaHGPlugin plugin) {
@@ -42,6 +39,6 @@ public final class StartPreGameData {
         bukkitWorld.setSpawnLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         bukkitWorld.getWorldBorder().setSize(config.getInt("pregame.border"));
         final PregameStorage oldStorage = PregameStorage.getStorage();
-        PregameStorage.update(new PregameStorage(location, oldStorage.addShopSpawnitem(), oldStorage.selectTeam()));
+        PregameStorage.update(new PregameStorage(location, oldStorage.addShopSpawnitem()));
     }
 }

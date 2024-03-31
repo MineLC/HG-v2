@@ -1,9 +1,7 @@
 package lc.minelc.hg.listeners;
 
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -16,9 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import lc.minelc.hg.game.GameState;
 import lc.minelc.hg.game.GameStorage;
 import lc.minelc.hg.game.PlayerInGame;
-import lc.minelc.hg.game.countdown.pregame.PreGameCountdown;
-import lc.minelc.hg.game.pregame.PregameStorage;
-import lc.minelc.hg.mapsystem.MapStorage;
 import lc.minelc.hg.others.spawn.SpawnStorage;
 import lc.minelc.hg.others.specialitems.TrackerItem;
 

@@ -5,10 +5,9 @@ import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftInventory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 
-import lc.minelc.hg.inventory.internal.InventoryCreator.Item;
 import lc.minelc.hg.others.spawn.SpawnStorage;
 
-public record PregameStorage(Location mapLocation, boolean addShopSpawnitem, Item selectTeam) {
+public record PregameStorage(Location mapLocation, boolean addShopSpawnitem) {
     private static PregameStorage storage;
 
     public static PregameStorage getStorage() {
@@ -20,7 +19,6 @@ public record PregameStorage(Location mapLocation, boolean addShopSpawnitem, Ite
         inventory.clear();
 
         inventory.setItem(SpawnStorage.getStorage().shopItem().slot(), SpawnStorage.getStorage().shopItem().item());
-        inventory.setItem(selectTeam.slot(), selectTeam.item());
         ((CraftInventory)inventory).getInventory().update();
     }
 

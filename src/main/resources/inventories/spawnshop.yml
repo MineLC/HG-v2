@@ -1,0 +1,10 @@
+inventory:
+  title: "Tienda de eggwars"
+  rows: 3
+
+kit-selector:
+  slot: 13
+  item: "267"
+  name: "&6Kits"
+  lore:
+    - "&7(Clic para entrar)"

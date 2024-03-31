@@ -12,7 +12,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import lc.lcspigot.listeners.EventListener;
 import lc.lcspigot.listeners.ListenerData;
 import lc.minelc.hg.database.mongodb.MongoDBManager;
-import lc.minelc.hg.database.mongodb.PlayerData;
 import lc.minelc.hg.database.mongodb.PlayerDataStorage;
 import lc.minelc.hg.others.sidebar.SidebarStorage;
 import lc.minelc.hg.others.sidebar.SidebarType;
@@ -37,8 +36,7 @@ public final class PlayerJoinListener implements EventListener {
         }
 
         CompletableFuture.runAsync(() -> {
-            final PlayerData data = MongoDBManager.getManager().getData(player.getUniqueId());
-            PlayerDataStorage.getStorage().add(player.getUniqueId(), data);
+            PlayerDataStorage.getStorage().add(player.getUniqueId(), MongoDBManager.getManager().getData(player.getUniqueId()));
             SidebarStorage.getStorage().getSidebar(SidebarType.SPAWN).send(player);            
         });       
     }

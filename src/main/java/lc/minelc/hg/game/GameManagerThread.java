@@ -17,7 +17,7 @@ public final class GameManagerThread extends Thread {
 
     @Override
     public void run() {
-        while (run) {
+        while (maps != null && run) {
             try {
                 Thread.sleep(1000);
                 executeTasks();
@@ -29,7 +29,6 @@ public final class GameManagerThread extends Thread {
 
     private void executeTasks() {
         final long time = System.currentTimeMillis();
-
         for (final MapData map : maps) {
             if (map != null && map.getGameInProgress() != null) {
                 EVENT_TASK.execute(map, time);
