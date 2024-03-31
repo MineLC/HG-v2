@@ -40,6 +40,10 @@ public final class MapData {
         return spawns.length;
     }
 
+    public EntityLocation[] getSpawns() {
+        return spawns;
+    }
+
     @Override
     public final int hashCode() {
         return id;

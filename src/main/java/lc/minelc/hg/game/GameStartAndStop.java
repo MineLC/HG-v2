@@ -3,6 +3,7 @@ package lc.minelc.hg.game;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -15,6 +16,7 @@ import lc.minelc.hg.others.events.GameEvent;
 import lc.minelc.hg.others.kits.KitStorage;
 import lc.minelc.hg.others.sidebar.SidebarStorage;
 import lc.minelc.hg.others.sidebar.SidebarType;
+import lc.minelc.hg.utils.EntityLocation;
 
 final class GameStartAndStop {
 
@@ -41,8 +43,13 @@ final class GameStartAndStop {
 
     private void startForPlayers(final GameInProgress game) {
         final Set<Player> players = game.getPlayers();
+        final EntityLocation[] spawns = game.getMapData().getSpawns();
+        int index = 0;
+
         for (final Player player : players) {
             KitStorage.getStorage().setKit(player, true);
+            final EntityLocation spawn = spawns[index++];
+            player.teleport(new Location(game.getWorld(), spawn.x(), spawn.y(), spawn.z(), spawn.yaw(), spawn.pitch()));
         }
         SidebarStorage.getStorage().getSidebar(SidebarType.IN_GAME).send(game.getPlayers());
     }
