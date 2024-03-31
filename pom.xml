@@ -1,0 +1,91 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>lc.minelc</groupId>
+    <artifactId>hg</artifactId>
+    <packaging>jar</packaging>
+
+    <name>HG</name>
+    <description>ArenaHG for MineLC</description>
+    <version>0.0.1</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>glaremasters</id>
+            <url>https://repo.glaremasters.me/repository/concuncan/</url>
+        </repository>
+        <repository>
+            <id>sonatype-snapshot</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>lc.lcspigot</groupId>
+            <artifactId>lcspigot</artifactId>
+            <version>1.8.4</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/lcspigot-0.0.6.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ichocomilk</groupId>
+            <artifactId>LightSidebar</artifactId>
+            <version>0.0.4</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>5.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>  
+            <groupId>com.grinderwolf</groupId>
+            <artifactId>slimeworldmanager-api</artifactId>
+            <version>2.2.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/slimeworld-plugin-2.2.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>obed.me</groupId>
+            <artifactId>LCCommons</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/LCCommons-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+   </dependencies>
+
+    <build>
+        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

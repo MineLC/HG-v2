@@ -1,0 +1,30 @@
+# TODO Add amount of lcoins to killer and vip points
+
+suffix-if-killer-exist: " por el jugador %d%"
+
+# When death cause is inexistent
+fallback-message: "%v%&f ha muerto" 
+
+deaths:
+  CONTACT: "%v%&f ha muerto"
+  ENTITY_ATTACK: "%v%&f ha muerto"
+  PROJECTILE: "%v%&f ha muerto por un proyectil lanzado"
+  SUFFOCATION: "%v%&f ha muerto por ser sofocado"
+  FALL: "%v%&f ha muerto de caida"
+  FIRE: "%v%&f &cha muerto quemado"
+  FIRE_TICK: "%v%&f ha muerto quemado"
+  MELTING: "%v%&f ha muerto por daños causados ​​por el derretimiento de un muñeco de nieve"
+  LAVA: "%v%&f ha muerto por lava"
+  DROWNING: "%v%&f se ha ahogado"
+  BLOCK_EXPLOSION: "%v%&f ha muerto por la explosión de una tnt"
+  ENTITY_EXPLOSION: "%v%&f ha muerto por un creeper"
+  VOID: "%v%&f se ha caido al vacio"
+  LIGHTNING: "%v%&f ha muerto por un rayo"
+  SUICIDE: "%v%&f se ha suicidado"
+  STARVATION: "%v%&f ha muerto por hambre"
+  POISON: "%v%&f ha muerto por veneno"
+  MAGIC: "%v%&f ha muerto por poción de daño"
+  WITHER: "%v%&f ha muerto por el efecto del wither"
+  FALLING_BLOCK: "%v%&f ha muerto porque un bloque se le cayo encima"
+  THORNS: "%v%&f ha muerto "
+  CUSTOM: "%v%&f ha muerto en raras circustancias"

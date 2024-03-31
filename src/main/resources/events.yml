@@ -1,0 +1,48 @@
+# Cuando es la diferencia entre el tiempo. Si tengo una tolerancia de 10
+# y el "start-time" es 500. Puede variar entre 450-550
+start-time-tolerance: 10
+events-seconds: [600, 1200, 1800, 2400, 3000, 3300]
+
+deathmatch:
+  name: "&c&lDEATH MATCH"
+  info: "&8(&a%time%&8) &c&lDEATH MATCH &7- &fTodos los huevos rotos y pvp"
+
+  start-time: 3600
+  regresive-count: 3
+  duration: 1000000
+
+  worldborder-size: 30
+  potions-add-every-seconds: 300
+  effects:
+    - "WITHER:1:10000"
+
+fatigue:
+  name: "&e&lCANSANCIO"
+  info: "&8(&a%time%&8) &e&lCANSANCIO &7- &fObten hambre y fatiga minera 1 por 30 segundos"
+  effects:
+    - "HUNGER:1:600"
+    - "SLOW_DIGGING:1:600"
+
+willpower:
+  name: "&b&lHASTA EL ÚLTIMO HOMBRE"
+  info: "&8(&a%time%&8) &b&lHASTA EL ÚLTIMO HOMBRE &7- &fObten resistencia y fuerza 1 por 30 segundos"
+  effects:
+    - "DAMAGE_RESISTANCE:1:600"
+    - "INCREASE_DAMAGE:1:600"
+
+fullheath:
+  name: "&c&lMATANZA"
+  info: "&8(&a%time%&8) &c&lMATANZA &7- &fCuando matas recuperas toda tu vida"
+  duration: 120
+
+critical:
+  name: "&4&lCRÍTICOS"
+  info: "&8(&a%time%&8) &4&lCRÍTICOS &7- &fCada golpe hace un &625%&f más de daño"
+  duration: 60
+
+rush:
+  name: "&e&lRUSH"
+  info: "&8(&a%time%&8) &e&lRUSH &7- &fTodos tienen velocidad y salto 1 por &61 minuto"
+  effects:
+    - "SPEED:1:600"
+    - "JUMP:1:600"

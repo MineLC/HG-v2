@@ -1,0 +1,16 @@
+kills:
+  prefix: "&6&lAsesinatos&7: "
+  every: 10
+  level-up: 1
+  add-lcoins: 20
+
+wins:
+  prefix: "&a&lVictoria&7: "
+  every: 1
+  level-up: 2
+  add-lcoins: 10
+
+deaths:
+  prefix: "&c&lMuerte&7: "
+  every: 10
+  level-up: -1

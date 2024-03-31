@@ -1,0 +1,111 @@
+pregame:
+  waiting-players: "&cEsperando por más jugadores..."
+  start-game: "&aEl juego ha iniciado!"
+  start-in: "&aEl juego inicia en %time%"
+  full: "&cEste mapa ya está lleno"
+
+game:
+  win:
+    - ""
+    - "&a&l   PARTIDA FINALIZADA"
+    - ""
+    - " &f  Duración: &e%time%"
+    - ""
+    - " &f  Ganador: %player%"
+    - ""
+
+kit:
+  selected: "&aHas selecionado el kit %name%"
+  no-money: "&cNo tienes suficientes lcoins para comprar este kit"
+
+level:
+  up: "&a¡Has subido de nivel! &7- &6%old% &7-> &e%new%"
+  down: "&cHas perdido un nivel... &7- &6%old% &7-> &e%new%"
+  command:
+    - ""
+    - " &6&lNIVELES"
+    - " "
+    - " &8- &fTu nivel: &a%level%"
+    - " "
+    - " &8- &e10 &fAsesinatos &7-> &a+1"
+    - " &8- &e1 &fVictoria &7-> &a+2"
+    - ""
+    - " &8- &e10 &fMuertes &7-> &c-1"
+    - ""
+
+commands:
+  help:
+    - " "
+    - " &b&lComandos públicos &0(/hentai)"
+    - " "
+    - " &f/level &7- Como funcionan los niveles"
+    - " &f/info &7(jugador)- Mira tus estadísticas"
+    - " "
+    - " &9&lDISCORD: &7http://mine.lc/discord"
+
+events:
+  time-remain: "&aQuedan %time% minutos para el siguiente evento"
+  spam-message: "&aEl evento %event% empieza en... %time% segundos"
+  format:
+    - ""
+    - " &a&lEVENTOS"
+    - ""
+    - " &7Los eventos que se jugaran en"
+    - " &7está partida serán:"
+    - " "
+
+death-match:
+  start-title:
+    title: "&aListos o no..."
+    subtitle: "&eAquí Vamos!"
+  start-message:
+    - ""
+    - " &c&lDEATH MATCH &7(Ilimitado)"
+    - " "
+    - " &7Todos serán teletransportados"
+    - " &7Al centro y ningun equipo tendrá huevo"
+    - " &7Cada 5 minutos obtendrán wither 1"
+    - " &7Asi que mueran rápido... >:)"
+    - " "
+
+fatigue:
+  start-message:
+    - ""
+    - " &e&lCANSANCIO &7(30 segundos)"
+    - " "
+    - " &fEstoy cansado jefe :'v"
+    - " &fTienes fatiga minera y hambre 1"
+    - " "
+
+willpower:
+  start-message:
+    - ""
+    - " &b&lHASTA EL ÚLTIMO HOMBRE &7(30 segundos)"
+    - " "
+    - " &fTodos obtienen resistencia y fuerza 1."
+    - " &a¡Salvemos a nuestros compañeros!"
+    - " "
+
+fullheath:
+  start-message:
+    - ""
+    - " &c&lMATAR TE LLENA DE DETERMINACIÓN &7(2 minutos)"
+    - " "
+    - " &fAl matar a un enemigo, te curarás por completo"
+    - " "
+
+critical:
+  start-message:
+    - ""
+    - " &6&lCRÍTICOS &7(1 minuto)"
+    - " "
+    - " &fCada golpe hace un 25% más de daño"
+    - " "
+
+rush:
+  start-message:
+    - ""
+    - " &e&lRUSH &7(1 minuto)"
+    - " "
+    - " &fTodos obtienen salto y velocidad 1 por &61 minuto"
+    - " "

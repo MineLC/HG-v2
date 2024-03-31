@@ -1,0 +1,15 @@
+mongodb:
+  database: ArenaHG
+  connection-string: mongodb://127.0.0.1:27017/hg
+
+spawn:
+  world: "spawn"
+  cords: "10,74,1,23,23"
+  border: 126
+
+pregame:
+  world: "pregame"
+  cords: "0,65,0,19,1.7"
+  border: 200
+
+win-celebration-duration-in-seconds: 10

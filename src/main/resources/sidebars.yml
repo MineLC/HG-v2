@@ -1,0 +1,26 @@
+spawn:
+  title: "&e&lArenaHG"
+  lines:
+    - ""
+    - "&fNivel: &a%level%"
+    - "&fLCoins: &6%coin%"
+    - ""
+    - "&fPartidas ganadas: &6%wins%"
+    - "&fAsesinatos: &c%kills%"
+    - "&fKDR: &a%kdr%"
+    - ""
+    - "&bplay.mine.lc"
+
+pregame:
+  title: "&e&lArenaHG"
+  lines:
+    - ""
+    - "&fLCoins: &6%coin%"
+    - ""
+    - "&fJugadores: &a%players%/&a%max%"
+    - "&fInicia en: &6%timer%"
+    - ""
+    - "&bplay.mine.lc"
+
+ingame:
+  title: "&e&lArenaHG"
