@@ -32,7 +32,7 @@ public final class MongoDBHandler {
             throw new Exception("The connection string for mongodb is null");
         }
         this.client = connect(connectionString);
-        updateDatabaseManager("eggwars", config.getString("mongodb.database"));
+        updateDatabaseManager("hg", config.getString("mongodb.database"));
     }
 
     private MongoClient connect(final String uri) {      

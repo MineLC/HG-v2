@@ -1,7 +1,6 @@
 package lc.minelc.hg.listeners;
 
 import lc.minelc.hg.game.GameInProgress;
-import lc.minelc.hg.game.GameState;
 import lc.minelc.hg.game.GameStorage;
 import lc.minelc.hg.messages.Messages;
 import lc.minelc.hg.others.spawn.SpawnStorage;
@@ -15,8 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.tinylog.Logger;
 
-import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class PlayerChatListener implements EventListener {
@@ -39,26 +38,20 @@ public class PlayerChatListener implements EventListener {
         }
 
         final GameInProgress game = GameStorage.getStorage().getGame(p.getUniqueId());
-
-        if (game == null) {
-            return;
-        }
-    
-        if(p.getGameMode() == GameMode.SPECTATOR){
-            final String spectatorMessage = "&8&lEspectador " + p.getName() + " &8» &f" + message;
-            Messages.sendNoGet(game.getPlayers().stream()
-                .filter(player -> player.getGameMode() == GameMode.SPECTATOR)
-                .collect(Collectors.toList()), spectatorMessage);
-
-            return;
-        }
-    
         final String global_format = pp.getRankInfo().getRank().getPrefix() + " &7" + pp.getRankInfo().getUserColor() + p.getName() + " &8» &f" + message;
 
-        final Collection<Player> players = (game.getState() == GameState.PREGAME)
-            ? game.getPlayers()
-            : SpawnStorage.getStorage().location().getWorld().getPlayers();
+        if (game == null) {
+            Messages.sendNoGet(SpawnStorage.getStorage().location().getWorld().getPlayers(),  global_format);
+            return;
+        }
+        if(p.getGameMode() != GameMode.SPECTATOR){
+            Messages.sendNoGet(game.getPlayers(),  global_format);
+            return;
+        }
 
-        Messages.sendNoGet(players,  global_format);
+        final String spectatorMessage = "&8&lEspectador " + p.getName() + " &8» &f" + message;
+        Messages.sendNoGet(game.getPlayers().stream()
+            .filter(player -> player.getGameMode() == GameMode.SPECTATOR)
+            .collect(Collectors.toList()), spectatorMessage);   
     }
 }

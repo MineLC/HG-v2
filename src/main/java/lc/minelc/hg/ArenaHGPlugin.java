@@ -58,7 +58,7 @@ public final class ArenaHGPlugin extends JavaPlugin {
 
         final SWMPlugin slimePlugin = (SWMPlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
         if (slimePlugin == null) {
-            Logger.info("EggwarsCore need slimeworld manager to work");
+            Logger.info("ArenaHG need slimeworld manager to work");
             return;
         }
         CompletableFuture.runAsync(() -> {

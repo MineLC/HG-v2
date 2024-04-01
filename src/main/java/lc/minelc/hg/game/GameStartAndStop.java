@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.tinylog.Logger;
 
 import lc.minelc.hg.ArenaHGPlugin;
 import lc.minelc.hg.game.countdown.GameCountdown;
@@ -28,9 +29,14 @@ final class GameStartAndStop {
             game.setEvents(EventStorage.getStorage().createEvents(game));
 
             plugin.getServer().getScheduler().runTask(plugin, () -> {
-                world.getWorldBorder().setCenter(world.getSpawnLocation());
-                world.getWorldBorder().setSize(game.getMapData().getBorderSize());
-                startForPlayers(game);
+                try {
+                    world.getWorldBorder().setCenter(world.getSpawnLocation());
+                    world.getWorldBorder().setSize(game.getMapData().getBorderSize());
+                    startForPlayers(game);
+           
+                } catch (Exception e) {
+                    Logger.error(e);
+                }
             });
 
             sendEventMessage(game);
