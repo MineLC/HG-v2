@@ -28,33 +28,18 @@ public final class MapStorage {
     }
 
     private final Map<String, MapData> mapsPerName;
-    
+    private final MapData[] maps;
+
     private final SWMPlugin slimePlugin;
     private final SlimeLoader loader;
 
-    MapStorage(SWMPlugin slimePlugin, SlimeLoader loader, Map<String, MapData> mapsPerName) {
+    MapStorage(SWMPlugin slimePlugin, SlimeLoader loader, Map<String, MapData> mapsPerName, MapData[] maps) {
         this.slimePlugin = slimePlugin;
         this.loader = loader;
         this.mapsPerName = mapsPerName;
+        this.maps = maps;
     }
 
-    // Execute this method async
-    public CompletableFuture<Void> loadMap(final String worldName) {
-        final MapData map = mapsPerName.get(worldName);
-        if (map == null) {
-            return null;
-        }
-
-        return CompletableFuture.runAsync(() -> {
-            try {
-                slimePlugin.generateWorld(slimePlugin.loadWorld(loader, worldName, false, PROPERTIES));
-            } catch (UnknownWorldException | CorruptedWorldException | NewerFormatException | WorldInUseException| IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    // Execute this method async
     public CompletableFuture<Void> load(final String worldName) {
         return CompletableFuture.runAsync(() -> {
             try {
@@ -66,12 +51,16 @@ public final class MapStorage {
         });
     }
 
-    public MapData getMapData(final String worldName) {
-        return mapsPerName.get(worldName);
+    public Map<String, MapData> getMapsMap() {
+        return mapsPerName;
     }
 
-    public Map<String, MapData> getMaps() {
-        return mapsPerName;
+    public MapData[] getMaps() {
+        return maps;
+    }
+
+    public MapData getMapData(final String worldName) {
+        return mapsPerName.get(worldName);
     }
 
     public SlimeLoader getFileLoader() {

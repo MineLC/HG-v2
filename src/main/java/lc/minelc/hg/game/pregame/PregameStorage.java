@@ -2,9 +2,9 @@ package lc.minelc.hg.game.pregame;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import lc.minelc.hg.inventory.internal.InventoryCreator.Item;
 import lc.minelc.hg.others.spawn.SpawnStorage;
 
 public record PregameStorage(Location mapLocation, boolean addShopSpawnitem) {
@@ -17,9 +17,8 @@ public record PregameStorage(Location mapLocation, boolean addShopSpawnitem) {
     public void send(final Player player) {
         final PlayerInventory inventory = player.getInventory();
         inventory.clear();
-        final int slot = SpawnStorage.getStorage().shopItem().slot();
-        final ItemStack item = SpawnStorage.getStorage().shopItem().item();
-        inventory.setItem(slot, item);
+        final Item shop = SpawnStorage.getStorage().getShopItem();
+        inventory.setItem(shop.slot(), shop.item());
     }
 
     static void update(PregameStorage newStorage) {

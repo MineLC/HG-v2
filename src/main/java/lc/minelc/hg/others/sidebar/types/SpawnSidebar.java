@@ -8,9 +8,9 @@ import io.github.ichocomilk.lightsidebar.LightSidebarLib;
 import io.github.ichocomilk.lightsidebar.Sidebar;
 import lc.minelc.hg.database.mongodb.PlayerData;
 import lc.minelc.hg.database.mongodb.PlayerDataStorage;
-import lc.minelc.hg.others.sidebar.EggwarsSidebar;
+import lc.minelc.hg.others.sidebar.HgSidebar;
 
-public final class SpawnSidebar implements EggwarsSidebar {
+public final class SpawnSidebar implements HgSidebar {
 
     private final String[] lines;
     private final String title;

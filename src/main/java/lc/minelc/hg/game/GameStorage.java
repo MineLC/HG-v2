@@ -55,12 +55,18 @@ public final class GameStorage {
         final Set<Player> players = game.getPlayers();
         players.remove(player);
 
-        if (game.getCountdown() instanceof EndgameCountdown || game.getCountdown() instanceof PreGameCountdown) {
-            if (game.getPlayers().isEmpty()) {
+        if (game.getCountdown() instanceof EndgameCountdown) {
+            if (players.isEmpty()) {
                 stop(game);
                 return;
             }
             return;
+        }
+        if (game.getCountdown() instanceof PreGameCountdown) {
+            if (players.isEmpty()) {
+                game.getMapData().setGame(null);
+                plugin.getServer().getScheduler().cancelTask(game.getCountdown().getId());
+            }
         }
         if (player.getGameMode() != GameMode.SPECTATOR) {
             new GameDeath(plugin).death(

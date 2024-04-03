@@ -7,8 +7,6 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.tinylog.Logger;
 
 import com.google.gson.Gson;
@@ -20,7 +18,6 @@ import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.plugin.SWMPlugin;
 
 import lc.minelc.hg.ArenaHGPlugin;
-import lc.minelc.hg.game.GameInProgress;
 import lc.minelc.hg.game.GameManagerThread;
 
 import lc.minelc.hg.utils.EntityLocation;
@@ -34,7 +31,7 @@ public final class StartMaps {
     public StartMaps(ArenaHGPlugin plugin, SWMPlugin slimePlugin) {
         this.plugin = plugin;
         this.slimePlugin = slimePlugin;
-        this.loader = slimePlugin.getLoader("file");
+        this.loader = slimePlugin.getLoader(plugin.getConfig().getString("slime-loader"));
     }
 
     public void load() {
@@ -42,13 +39,13 @@ public final class StartMaps {
 
         if (!mapFolder.exists()) {
             mapFolder.mkdir();
-            MapStorage.update(new MapStorage(slimePlugin, loader, new HashMap<>()));
+            MapStorage.update(new MapStorage(slimePlugin, loader, new HashMap<>(), null));
             return;
         }
 
         final File[] mapFiles = mapFolder.listFiles();
         if (mapFiles == null) {
-            MapStorage.update(new MapStorage(slimePlugin, loader, new HashMap<>()));
+            MapStorage.update(new MapStorage(slimePlugin, loader, new HashMap<>(), null));
             return;
         }
         final Map<String, MapData> mapsPerName = new HashMap<>();
@@ -56,7 +53,7 @@ public final class StartMaps {
         if (mapFiles.length > 0) {
             loadMapData(maps, mapFiles, mapsPerName);
         }
-        MapStorage.update(new MapStorage(slimePlugin, loader, mapsPerName));
+        MapStorage.update(new MapStorage(slimePlugin, loader, mapsPerName, maps));
         GameManagerThread.setMaps(maps);
     }
 
@@ -70,36 +67,21 @@ public final class StartMaps {
             }
             try {
                 final JsonMapData data = gson.fromJson(new JsonReader(new BufferedReader(new FileReader(mapFile))), JsonMapData.class);
-                final World world = Bukkit.getWorld(data.world());
-                if (world == null) {
-                    continue;
-                }
-                final int newIndex = index;
-                final MapData map = loadMapData(data, newIndex);
+                final MapData map = new MapData(
+                    getSpawns(data),
+                    data.borderSize(),
+                    index,
+                    data.world()
+                );
 
-                maps[newIndex] = map;
+                maps[index] = map;
                 mapsPerName.put(data.world(), map);
                 index++;
-
-                Bukkit.unloadWorld(world, false);
-
-                map.setGame(new GameInProgress(map));
-
             } catch (JsonSyntaxException | JsonIOException | FileNotFoundException e) {
                 Logger.error("Error on load the map: " + mapFile.getName() + ". Check the json in: " + mapFile.getAbsolutePath());
                 Logger.error(e);
             }
         }
-    }
-
-    private MapData loadMapData(final JsonMapData data, final int id) {
-        final MapData map = new MapData(
-            getSpawns(data),
-            data.borderSize(),
-            id,
-            data.world()
-        );
-        return map;
     }
 
 

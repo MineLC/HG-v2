@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.tinylog.Logger;
 
 import java.util.stream.Collectors;
 
@@ -41,7 +40,7 @@ public class PlayerChatListener implements EventListener {
         final String global_format = pp.getRankInfo().getRank().getPrefix() + " &7" + pp.getRankInfo().getUserColor() + p.getName() + " &8» &f" + message;
 
         if (game == null) {
-            Messages.sendNoGet(SpawnStorage.getStorage().location().getWorld().getPlayers(),  global_format);
+            Messages.sendNoGet(SpawnStorage.getStorage().getPlayers(),  global_format);
             return;
         }
         if(p.getGameMode() != GameMode.SPECTATOR){

@@ -18,4 +18,16 @@ public final class NumberUtils {
         }
         return result / 10;
     }
+
+    public static int aproximate(int value1, int value2) {
+        if (value1 < value2) {
+            return 1;
+        }
+        if (value1 % value2 == 0) {
+            return value1 / value2;
+        }
+        return (value1 % value2 == 0)
+            ? value1 / value2
+            : (value1 / value2) + 1;
+    }
 }

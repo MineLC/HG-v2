@@ -18,7 +18,6 @@ import com.grinderwolf.swm.plugin.SWMPlugin;
 import lc.lcspigot.commands.CommandStorage;
 import lc.lcspigot.listeners.ListenerRegister;
 import lc.minelc.hg.commands.BasicCommandsRegister;
-import lc.minelc.hg.commands.game.JoinCommand;
 import lc.minelc.hg.commands.game.LeaveCommand;
 import lc.minelc.hg.commands.map.MapCreatorCommand;
 import lc.minelc.hg.database.mongodb.MongoDBHandler;
@@ -45,6 +44,8 @@ import lc.minelc.hg.others.deaths.StartDeaths;
 import lc.minelc.hg.others.events.StartEvents;
 import lc.minelc.hg.others.kits.StartKits;
 import lc.minelc.hg.others.levels.StartLevels;
+import lc.minelc.hg.others.selectgame.MapInventoryBuilder;
+import lc.minelc.hg.others.selectgame.StartMapInventories;
 import lc.minelc.hg.others.sidebar.StartSidebar;
 import lc.minelc.hg.others.spawn.StartSpawn;
 
@@ -68,26 +69,25 @@ public final class ArenaHGPlugin extends JavaPlugin {
                 getServer().getScheduler().runTask(this, () -> Logger.error(e));
             }
         });
-        try {
-            new StartMessages().load(this);
-            new StartGameData().load(this);
-            new StartKits(this).load();
-            new StartDeaths(this).load(this);
-            new StartSpawn(this).loadItems();
-            new StartLevels(this).load();
-            new StartPreGameData().loadItems(this);
-            new StartSidebar().load(this);
-            new StartEvents(this).load();   
-        } catch (Exception e) {
-            Logger.error(e);
-        }
+
+        new StartMessages().load(this);
+        new StartGameData().load(this);
+        new StartKits(this).load();
+        new StartDeaths(this).load(this);
+        new StartSpawn(this).loadItems();
+        new StartLevels(this).load();
+        new StartPreGameData().loadItems(this);
+        new StartSidebar(this).load();
+        new StartEvents(this).load();
+        new StartMaps(this, slimePlugin).load();
+
+        final MapInventoryBuilder mapInventoryBuilder = new StartMapInventories().load(this);
 
         loadCommands();
-        registerBasicListeners();
+        registerBasicListeners(mapInventoryBuilder);
 
         getServer().getScheduler().runTaskLater(this, () -> {
             try {
-                new StartMaps(this, slimePlugin).load();
                 new StartSpawn(this).loadSpawn();
                 new StartPreGameData().loadMap(this);
                 GameManagerThread.startThread();  
@@ -97,7 +97,7 @@ public final class ArenaHGPlugin extends JavaPlugin {
         }, 20);
     }
 
-    private void registerBasicListeners() {
+    private void registerBasicListeners(final MapInventoryBuilder builder) {
         final ListenerRegister listeners = new ListenerRegister(this);
 
         listeners.register(new PlayerDeathListener(this), true);
@@ -105,10 +105,10 @@ public final class ArenaHGPlugin extends JavaPlugin {
         listeners.register(new EntityDamageListener(), true);
         listeners.register(new PlayerDamageByPlayerListener(), true);
         listeners.register(new PlayerInventoryClickListener(), true);
-        listeners.register(new PlayerInteractListener(), true);
+        listeners.register(new PlayerInteractListener(builder), true);
 
         listeners.register(new PlayerBreakListener(), true);
-        listeners.register(new PlayerJoinListener(), true);  
+        listeners.register(new PlayerJoinListener(getConfig().getStringList("tab.header"), getConfig().getStringList("tab.footer")), true);  
         listeners.register(new PlayerQuitListener(), true);  
         listeners.register(new PlayerDropitemListener(), true);  
         listeners.register(new PlayerChatListener(), true);
@@ -145,7 +145,6 @@ public final class ArenaHGPlugin extends JavaPlugin {
 
     private void loadCommands() {
         CommandStorage.register(new MapCreatorCommand(this, new MapCreatorData()), "map");
-        CommandStorage.register(new JoinCommand(), "join");
         CommandStorage.register(new LeaveCommand(), "leave");
 
         new BasicCommandsRegister().registerBasicCommands();

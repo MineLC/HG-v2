@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import lc.minelc.hg.game.countdown.CountdownCallback;
 import lc.minelc.hg.game.countdown.GameCountdown;
 import lc.minelc.hg.messages.Messages;
-import lc.minelc.hg.others.sidebar.EggwarsSidebar;
+import lc.minelc.hg.others.sidebar.HgSidebar;
 import lc.minelc.hg.others.sidebar.SidebarStorage;
 import lc.minelc.hg.others.sidebar.SidebarType;
 
@@ -33,7 +33,7 @@ public class PreGameCountdown extends GameCountdown {
     @Override
     public void run() {
         if (countdown % data.sidebarUpdateTime == 0) {
-            final EggwarsSidebar sidebar = SidebarStorage.getStorage().getSidebar(SidebarType.PREGAME);
+            final HgSidebar sidebar = SidebarStorage.getStorage().getSidebar(SidebarType.PREGAME);
             sidebar.send(players);   
         }
 

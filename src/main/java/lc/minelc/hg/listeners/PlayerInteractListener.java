@@ -8,12 +8,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import lc.minelc.hg.game.GameState;
 import lc.minelc.hg.game.GameStorage;
 import lc.minelc.hg.game.PlayerInGame;
+import lc.minelc.hg.others.selectgame.MapInventoryBuilder;
 import lc.minelc.hg.others.spawn.SpawnStorage;
 import lc.minelc.hg.others.specialitems.TrackerItem;
 
@@ -21,6 +21,12 @@ import lc.lcspigot.listeners.EventListener;
 import lc.lcspigot.listeners.ListenerData;
 
 public final class PlayerInteractListener implements EventListener {
+
+    private final MapInventoryBuilder mapInventoryBuilder;
+
+    public PlayerInteractListener(MapInventoryBuilder mapInventoryBuilder) {
+        this.mapInventoryBuilder = mapInventoryBuilder;
+    }
 
     @ListenerData(
         event = PlayerInteractEvent.class,
@@ -33,44 +39,41 @@ public final class PlayerInteractListener implements EventListener {
             || event.getPlayer().getGameMode() == GameMode.SPECTATOR) {
             return;
         }
-        if (event.getItem() != null && handleInteractWithItems(event)) {
-            return;
-        }
-        event.setCancelled(false);
         if (SpawnStorage.getStorage().isInSpawn(event.getPlayer())) {
             event.setCancelled(true);
-            if (event.getItem() == null) {
-                return;
-            }
-            final Inventory inventory = SpawnStorage.getStorage().items().get(event.getItem().getType());
-            if (inventory != null) {
-                event.getPlayer().openInventory(inventory);
+            if (event.getItem() != null) {
+                handleWithSpawnItems(event.getPlayer(), event.getItem().getType());
             }
             return;
+        }
+        if (event.getItem() != null) {
+            handleInteractWithItems(event);
         }
     }
 
-
-    private boolean handleInteractWithItems(final PlayerInteractEvent event) {
+    private void handleInteractWithItems(final PlayerInteractEvent event) {
         final PlayerInGame playerInGame = GameStorage.getStorage().getPlayerInGame(event.getPlayer().getUniqueId());
-        final Material type = event.getItem().getType();
 
         if (playerInGame != null) {
             if (playerInGame.getGame().getState() == GameState.IN_GAME) {
-                return handleSpecialItems(event, playerInGame, event.getPlayer(), event.getItem(), type);
+                handleSpecialItems(event, playerInGame, event.getPlayer(), event.getItem(), event.getItem().getType());
+                return;
             }
-            if (playerInGame.getGame().getState() == GameState.PREGAME) {
+            if (playerInGame.getGame().getState() == GameState.END_GAME) {
                 event.setCancelled(true);
-                return true;
             }
         }
+    }
 
-        final Inventory inventory = SpawnStorage.getStorage().items().get(type);
-        if (inventory != null) {
-            event.setCancelled(true);
-            event.getPlayer().openInventory(inventory);
+    private void handleWithSpawnItems(final Player player, final Material type) {
+        if (type == SpawnStorage.getStorage().getShopItemMaterial()) {
+            player.openInventory(SpawnStorage.getStorage().getShopInventory().getInventory());
+            return;
         }
-        return true;
+        if (type == SpawnStorage.getStorage().getGameItemMaterial()) {
+            player.openInventory(mapInventoryBuilder.build());
+            return;
+        }
     }
 
     private boolean handleSpecialItems(final PlayerInteractEvent event, final PlayerInGame game, final Player player, final ItemStack item, final Material material) {

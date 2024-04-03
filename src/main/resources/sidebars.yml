@@ -15,12 +15,8 @@ pregame:
   title: "&e&lArenaHG"
   lines:
     - ""
+    - "&fMapa: &a%map%"
     - "&fLCoins: &6%coin%"
-    - ""
     - "&fJugadores: &a%players%/&a%max%"
-    - "&fInicia en: &6%timer%"
     - ""
     - "&bplay.mine.lc"
-
-ingame:
-  title: "&e&lArenaHG"

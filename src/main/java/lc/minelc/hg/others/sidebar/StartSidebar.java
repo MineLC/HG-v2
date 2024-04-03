@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
+import io.github.ichocomilk.lightsidebar.LightSidebarLib;
 import lc.minelc.hg.ArenaHGPlugin;
 import lc.minelc.hg.messages.Messages;
 import lc.minelc.hg.others.sidebar.types.GameSidebar;
@@ -12,9 +13,14 @@ import lc.minelc.hg.others.sidebar.types.SpawnSidebar;
 
 public final class StartSidebar {
 
-    public void load(final ArenaHGPlugin plugin) {
-        final FileConfiguration config = plugin.loadConfig("sidebars");
-        final EggwarsSidebar[] sidebars = new EggwarsSidebar[3];
+    private final FileConfiguration config;
+
+    public StartSidebar(ArenaHGPlugin plugin) {
+        this.config = plugin.loadConfig("sidebars");
+    }
+
+    public void load() {
+        final HgSidebar[] sidebars = new HgSidebar[3];
 
         sidebars[SidebarType.SPAWN.ordinal()] = createSidebar(config, "spawn", SidebarType.SPAWN);
         sidebars[SidebarType.PREGAME.ordinal()] = createSidebar(config, "pregame", SidebarType.PREGAME);
@@ -23,12 +29,12 @@ public final class StartSidebar {
         SidebarStorage.update(new SidebarStorage(sidebars));
     }
 
-    private EggwarsSidebar createSidebar(final FileConfiguration config, final String path, final SidebarType type) {
+    private HgSidebar createSidebar(final FileConfiguration config, final String path, final SidebarType type) {
         final String sidebarPath = path + '.';
         final String[] lines = toArray(config.getStringList(sidebarPath + "lines")); 
         final String title = Messages.color(config.getString(sidebarPath + "title"));
     
-        final EggwarsSidebar sidebar = getSidebar(type, lines, title);
+        final HgSidebar sidebar = getSidebar(type, lines, title);
 
         return sidebar;
     }
@@ -45,11 +51,11 @@ public final class StartSidebar {
         return array;
     }
 
-    private EggwarsSidebar getSidebar(final SidebarType type, final String[] lines, final String title) {
+    private HgSidebar getSidebar(final SidebarType type, final String[] lines, final String title) {
         switch (type) {
             case SPAWN: return new SpawnSidebar(lines, title);
             case PREGAME: return new PregameSidebar(lines, title);
-            case IN_GAME: return new GameSidebar(title);
+            case IN_GAME: return new GameSidebar(new LightSidebarLib().createSidebar());
             default: return null;
         }
     }
