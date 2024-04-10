@@ -10,6 +10,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import lc.minelc.hg.others.kits.KitStorage;
 import lc.minelc.hg.game.GameState;
 import lc.minelc.hg.game.GameStorage;
 import lc.minelc.hg.game.PlayerInGame;
@@ -57,6 +58,10 @@ public final class PlayerInteractListener implements EventListener {
         if (playerInGame != null) {
             if (playerInGame.getGame().getState() == GameState.IN_GAME) {
                 handleSpecialItems(event, playerInGame, event.getPlayer(), event.getItem(), event.getItem().getType());
+                return;
+            }
+            if (playerInGame.getGame().getState() == GameState.PREGAME) {
+                event.getPlayer().openInventory(KitStorage.getStorage().inventory().getInventory());
                 return;
             }
             if (playerInGame.getGame().getState() == GameState.END_GAME) {

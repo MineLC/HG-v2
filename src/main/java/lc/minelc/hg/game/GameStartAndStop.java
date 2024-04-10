@@ -96,6 +96,7 @@ final class GameStartAndStop {
             Bukkit.getScheduler().cancelTask(game.getCountdown().getId());
         }
         final World world = game.getWorld();
+        game.getMapData().setGame(null);
         Bukkit.unloadWorld(world, false);
         System.gc();
     }
