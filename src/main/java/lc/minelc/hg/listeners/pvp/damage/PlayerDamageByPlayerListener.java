@@ -1,5 +1,6 @@
 package lc.minelc.hg.listeners.pvp.damage;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -30,10 +31,13 @@ public final class PlayerDamageByPlayerListener implements EventListener {
         if (game == null || game.getState() != GameState.IN_GAME) {
             return;
         }
+        if (game.getInvincibility()){
+            event.setCancelled(true);
+            event.setDamage(0);
+        }
 
         if (game.getCurrentEvent() != null && game.getCurrentEvent().eventType() == GameEventType.CRITICAL) {
             event.setDamage(event.getDamage() + (event.getDamage() / 100) * 25);
-            return;
         }
     }
 }

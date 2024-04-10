@@ -2,6 +2,7 @@ package lc.minelc.hg.others.sidebar.types;
 
 import java.util.Collection;
 
+import lc.minelc.hg.others.kits.KitStorage;
 import org.bukkit.entity.Player;
 
 import io.github.ichocomilk.lightsidebar.LightSidebarLib;
@@ -33,15 +34,19 @@ public final class PregameSidebar implements HgSidebar {
 
         final PlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
 
+        final String selectedKit = KitStorage.getStorage().kitsPerId().get(data.kitSelected).name();
         final String lcoins = String.valueOf(data.coins);
-        final String players = game.getPlayers().size() + "/" + ChatColor.GOLD + game.getMapData().getMaxPlayers();
+        final String players = String.valueOf(game.getPlayers().size());
+        final String maxPlayers = String.valueOf(game.getMapData().getMaxPlayers());
         final String[] parsedLines = new String[lines.length];
 
         for (int i = 0; i < lines.length; i++) {
             parsedLines[i] = lines[i].isEmpty() ? "" : lines[i]
-                .replace("%coin%", lcoins)
-                .replace("%players%", players)
-                .replace("%map%", game.getMapData().toString());
+                    .replace("%selectedkit%",selectedKit)
+                    .replace("%coin%", lcoins)
+                    .replace("%players%", players)
+                    .replace("%max%",maxPlayers)
+                    .replace("%map%", game.getMapData().toString());
         }
         final Sidebar sidebar = new LightSidebarLib().createSidebar();
         final Object[] lines = sidebar.createLines(parsedLines);

@@ -72,7 +72,6 @@ public final class PlayerInteractListener implements EventListener {
         }
         if (type == SpawnStorage.getStorage().getGameItemMaterial()) {
             player.openInventory(mapInventoryBuilder.build());
-            return;
         }
     }
 

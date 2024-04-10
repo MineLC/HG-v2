@@ -52,6 +52,11 @@ public final class EntityDamageListener implements EventListener {
             return;
         }
 
+        if (game.getState() == GameState.IN_GAME && game.getInvincibility()){
+            event.setCancelled(true);
+            event.setDamage(0);
+        }
+
         if (game.getState() == GameState.END_GAME) {
             event.setCancelled(true);
             if (event.getCause() == DamageCause.VOID) {

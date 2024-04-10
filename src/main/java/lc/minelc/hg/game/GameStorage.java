@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import lc.minelc.hg.game.countdown.invencibility.InvencibilityCountdown;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -18,11 +19,13 @@ public final class GameStorage {
 
     private final ArenaHGPlugin plugin;
     private final PreGameCountdown.Data pregameData;
+    private final InvencibilityCountdown.Data invencibilityData;
     private final Map<UUID, PlayerInGame> playersInGame = new HashMap<>();
 
-    GameStorage(ArenaHGPlugin plugin, PreGameCountdown.Data data) {
+    GameStorage(ArenaHGPlugin plugin, PreGameCountdown.Data data, InvencibilityCountdown.Data invencibilityData) {
         this.plugin = plugin;
         this.pregameData = data;
+        this.invencibilityData = invencibilityData;
     }
 
     public void join(final String world, final GameInProgress game, final Player player) {
@@ -36,7 +39,7 @@ public final class GameStorage {
         final PreGameCountdown waitToStartCountdown = new PreGameCountdown(
             pregameData,
             game.getPlayers(),
-            () -> new GameStartAndStop().start(plugin, game, world)
+            () -> new GameStartAndStop().start(plugin, game, invencibilityData, world)
         );
 
         final int id = plugin.getServer().getScheduler().runTaskTimer(plugin, waitToStartCountdown, 0, 20).getTaskId();
@@ -47,6 +50,7 @@ public final class GameStorage {
     }
 
     public void stop(final GameInProgress game) {
+        System.out.println("se detuvo el juego: " + game.getWorld().getName());
         new GameStartAndStop().stop(game);
     }
 

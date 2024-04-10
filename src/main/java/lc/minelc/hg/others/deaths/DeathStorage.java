@@ -36,9 +36,8 @@ public final class DeathStorage {
         if (deathMessage == null) {
             deathMessage = fallbackDeathMessage;
         }
-
         if (player.getKiller() != null) {
-            deathMessage = deathMessage + suffixIfPlayerKill.replace("%d%", player.getKiller().getName());
+            deathMessage = deathMessage.replace("%v%", player.getName()) + suffixIfPlayerKill.replace("%d%", player.getKiller().getName());
         }
         return deathMessage;
     }

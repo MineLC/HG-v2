@@ -69,6 +69,7 @@ public final class StartMaps {
                 final JsonMapData data = gson.fromJson(new JsonReader(new BufferedReader(new FileReader(mapFile))), JsonMapData.class);
                 final MapData map = new MapData(
                     getSpawns(data),
+                    plugin.getConfig().getInt("max-players-per-map"),
                     data.borderSize(),
                     index,
                     data.world()

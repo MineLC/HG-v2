@@ -19,6 +19,7 @@ public final class GameInProgress {
 
     private World world;
     private GameState state = GameState.NONE;
+    private boolean invincibility = true;
     private GameCountdown countdown;
 
     private GameEvent[] events;
@@ -36,6 +37,10 @@ public final class GameInProgress {
 
     public void startTime() {
         this.startTime = System.currentTimeMillis();
+    }
+
+    public void setInvincibility(boolean value){
+        this.invincibility = value;
     }
 
     public void setCountdown(GameCountdown countdown) {
@@ -62,6 +67,9 @@ public final class GameInProgress {
         return state;
     }
 
+    public boolean getInvincibility() {
+        return invincibility;
+    }
     public GameCountdown getCountdown() {
         return countdown;
     }

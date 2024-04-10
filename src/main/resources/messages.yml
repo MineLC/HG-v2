@@ -3,7 +3,10 @@ pregame:
   start-game: "&aEl juego ha iniciado!"
   start-in: "&aEl juego inicia en %time%"
   full: "&cEste mapa ya está lleno"
-
+invencibility:
+  starting: "%eTodos son invenciblea, recoge items de los cofres para sobrevivir despues."
+  start-in: "&aTodos seran  invencibles durante %time% segundos."
+  finished: "&cTodos son vulnerables ahora, que empieze la masacre."
 game:
   win:
     - ""

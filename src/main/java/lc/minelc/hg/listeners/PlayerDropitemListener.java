@@ -24,8 +24,10 @@ public final class PlayerDropitemListener implements EventListener {
             return;
         }
         final GameInProgress gameInProgress = GameStorage.getStorage().getGame(event.getPlayer().getUniqueId());
-        if (gameInProgress != null && gameInProgress.getState() == GameState.PREGAME) {
+        if (!(gameInProgress != null && gameInProgress.getState() == GameState.IN_GAME)) {
             event.setCancelled(true);
+        }else{
+            event.setCancelled(false);
         }
     }
 }

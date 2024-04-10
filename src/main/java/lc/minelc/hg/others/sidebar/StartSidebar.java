@@ -55,7 +55,7 @@ public final class StartSidebar {
         switch (type) {
             case SPAWN: return new SpawnSidebar(lines, title);
             case PREGAME: return new PregameSidebar(lines, title);
-            case IN_GAME: return new GameSidebar(new LightSidebarLib().createSidebar());
+            case IN_GAME: return new GameSidebar(lines,title);
             default: return null;
         }
     }

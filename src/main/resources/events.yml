@@ -15,9 +15,8 @@ deathmatch:
   potions-add-every-seconds: 300
   effects:
     - "WITHER:1:10000"
-
 fatigue:
-  name: "&e&lCANSANCIO"
+  name: "&6&lCANSANCIO"
   info: "&8(&a%time%&8) &e&lCANSANCIO &7- &fObten hambre y fatiga minera 1 por 30 segundos"
   effects:
     - "HUNGER:1:600"

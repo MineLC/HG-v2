@@ -2,7 +2,9 @@ package lc.minelc.hg.game;
 
 import java.util.Set;
 
+import lc.minelc.hg.game.countdown.invencibility.InvencibilityCountdown;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -21,7 +23,9 @@ import lc.minelc.hg.utils.EntityLocation;
 
 final class GameStartAndStop {
 
-    void start(final ArenaHGPlugin plugin, final GameInProgress game, final String worldName) {
+    private InvencibilityCountdown invencibilityCountdown;
+
+    void start(final ArenaHGPlugin plugin, final GameInProgress game, final InvencibilityCountdown.Data invencibilityData, final String worldName) {
         MapStorage.getStorage().load(worldName).thenAccept((none) -> {
             final World world = Bukkit.getWorld(worldName);
             game.setWorld(world);
@@ -39,22 +43,39 @@ final class GameStartAndStop {
                 }
             });
 
-            sendEventMessage(game);
+            //sendEventMessage(game);
+            invencibilityCountdown = new InvencibilityCountdown(
+                    invencibilityData,
+                    game.getPlayers(),
+                    () -> setInvencibility(game,true),
+                    () -> setInvencibility(game,false)
+            );
 
             game.startTime();
             game.setState(GameState.IN_GAME);
             game.setCountdown(null);
+
+            final int id = plugin.getServer().getScheduler().runTaskTimer(plugin,invencibilityCountdown, 0, 20).getTaskId();
+            invencibilityCountdown.setId(id);
         });
     }
 
+    private void setInvencibility(final GameInProgress game, boolean onInvencibility){
+        if (onInvencibility){
+            game.setCountdown(invencibilityCountdown);
+        }else{
+            game.setCountdown(null);
+            game.setInvincibility(false);
+        }
+    }
     private void startForPlayers(final GameInProgress game) {
         final Set<Player> players = game.getPlayers();
         final EntityLocation[] spawns = game.getMapData().getSpawns();
-        int index = 0;
 
         for (final Player player : players) {
             KitStorage.getStorage().setKit(player, true);
-            final EntityLocation spawn = spawns[index++];
+            player.setGameMode(GameMode.SURVIVAL);
+            final EntityLocation spawn = spawns[0];
             player.teleport(new Location(game.getWorld(), spawn.x(), spawn.y(), spawn.z(), spawn.yaw(), spawn.pitch()));
         }
         SidebarStorage.getStorage().getSidebar(SidebarType.IN_GAME).send(game.getPlayers());

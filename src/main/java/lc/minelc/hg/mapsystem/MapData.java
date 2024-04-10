@@ -6,6 +6,7 @@ import lc.minelc.hg.utils.EntityLocation;
 
 public final class MapData {
     private final EntityLocation[] spawns;
+    private final int maxPlayers;
     private final int borderSize;
     private final int id;
     private final String name;
@@ -14,11 +15,13 @@ public final class MapData {
 
     MapData(
         EntityLocation[] spawns,
+        int maxPlayers,
         int borderSize,
         int id,
         String name
     ) {
         this.spawns = spawns;
+        this.maxPlayers = maxPlayers;
         this.borderSize = borderSize;
         this.id = id;
         this.name = name;
@@ -37,7 +40,7 @@ public final class MapData {
     }
 
     public int getMaxPlayers() {
-        return spawns.length;
+        return maxPlayers;
     }
 
     public EntityLocation[] getSpawns() {

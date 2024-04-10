@@ -2,6 +2,7 @@ package lc.minelc.hg.game;
 
 import java.util.Set;
 
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import lc.minelc.hg.ArenaHGPlugin;
@@ -40,7 +41,7 @@ public final class GameDeath {
 
         final EndgameCountdown endgameCountdown = new EndgameCountdown(game);
 
-        Messages.sendNoGet(game.getPlayers(), Messages.get("team.win")
+        Messages.sendNoGet(game.getPlayers(), Messages.get("game.win")
             .replace("%player%", finalPlayer.getName())
             .replace("%time%", GameCountdown.parseTime((System.currentTimeMillis() - game.getStartedTime()) / 1000)));
 
@@ -58,6 +59,9 @@ public final class GameDeath {
     private Player getLastPlayerAlive(final Set<Player> players) {
         Player finalPlayer = null;
         for (final Player otherPlayer : players) {
+            if (otherPlayer.getGameMode() == GameMode.SPECTATOR) {
+                continue;
+            }
             if (finalPlayer == null) {
                 finalPlayer = otherPlayer;
                 continue;
