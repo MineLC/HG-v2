@@ -3,12 +3,10 @@ package lc.minelc.hg.others.sidebar.types;
 import java.util.Collection;
 
 import io.github.ichocomilk.lightsidebar.LightSidebarLib;
-import lc.minelc.hg.database.mongodb.PlayerData;
+import lc.minelc.hg.database.mongodb.HGPlayerData;
 import lc.minelc.hg.database.mongodb.PlayerDataStorage;
 import lc.minelc.hg.game.GameInProgress;
-import lc.minelc.hg.game.GameState;
 import lc.minelc.hg.game.GameStorage;
-import lc.minelc.hg.others.kits.KitStorage;
 import org.bukkit.entity.Player;
 
 import io.github.ichocomilk.lightsidebar.Sidebar;
@@ -31,7 +29,7 @@ public final class GameSidebar implements HgSidebar {
             return;
         }
 
-        final PlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
+        final HGPlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
 
         final String coins = String.valueOf(data.coins);
         final String level = String.valueOf(data.level);

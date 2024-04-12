@@ -1,7 +1,9 @@
 package lc.minelc.hg.game.pregame;
 
+import lc.minelc.hg.inventory.internal.InventoryCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.tinylog.Logger;
@@ -13,9 +15,11 @@ public final class StartPreGameData {
 
     public void loadItems(ArenaHGPlugin plugin) {
         final FileConfiguration config = plugin.loadConfig("items/pregame");
-        final boolean addShopSpawnItem = config.getBoolean("add-shop-spawn-item");
+        final InventoryCreator creator = new InventoryCreator(config);
+        final InventoryCreator.Item shopItem = creator.create("select-kit-item");
+        Material shopItemMaterial = shopItem.item().getType();
 
-        PregameStorage.update(new PregameStorage(null, addShopSpawnItem));
+        PregameStorage.update(new PregameStorage(null, shopItem, shopItemMaterial));
     }
 
     public void loadMap(final ArenaHGPlugin plugin) {
@@ -39,6 +43,6 @@ public final class StartPreGameData {
         bukkitWorld.setSpawnLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ());
         bukkitWorld.getWorldBorder().setSize(config.getInt("pregame.border"));
         final PregameStorage oldStorage = PregameStorage.getStorage();
-        PregameStorage.update(new PregameStorage(location, oldStorage.addShopSpawnitem()));
+        PregameStorage.update(new PregameStorage(location, oldStorage.selectKitItem(), oldStorage.kitSelectedMaterial()));
     }
 }

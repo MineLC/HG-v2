@@ -26,6 +26,7 @@ public final class TrackerItem {
                 .replace("%player%", otherPlayer.getName()));
 
             player.setCompassTarget(otherPlayer.getLocation());
+            break;
         }
     }
 }

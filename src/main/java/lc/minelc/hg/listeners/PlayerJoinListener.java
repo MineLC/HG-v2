@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import obed.me.lccommons.api.entities.PlayerData;
+import obed.me.lccommons.api.services.UserProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -16,7 +18,7 @@ import lc.lcspigot.listeners.ListenerData;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
 import lc.minelc.hg.database.mongodb.MongoDBManager;
-import lc.minelc.hg.database.mongodb.PlayerData;
+import lc.minelc.hg.database.mongodb.HGPlayerData;
 import lc.minelc.hg.database.mongodb.PlayerDataStorage;
 import lc.minelc.hg.messages.Messages;
 import lc.minelc.hg.others.sidebar.SidebarStorage;
@@ -49,7 +51,9 @@ public final class PlayerJoinListener implements EventListener {
         ((CraftPlayer)player).getHandle().playerConnection.networkManager.handle(packetTab);
 
         CompletableFuture.runAsync(() -> {
-            final PlayerData data = MongoDBManager.getManager().getData(player.getUniqueId());
+            final HGPlayerData data = MongoDBManager.getManager().getData(player.getUniqueId());
+            PlayerData playerData = UserProvider.getInstance().getUserByName(player.getName());
+            data.coins = playerData.getCoins();
             PlayerDataStorage.getStorage().add(player.getUniqueId(), data);
             SidebarStorage.getStorage().getSidebar(SidebarType.SPAWN).send(player);            
         });       

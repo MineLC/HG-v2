@@ -1,5 +1,7 @@
 package lc.minelc.hg.listeners;
 
+import lc.minelc.hg.game.pregame.PregameStorage;
+import lc.minelc.hg.others.abilities.GameAbility;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,6 +22,9 @@ import lc.minelc.hg.others.specialitems.TrackerItem;
 
 import lc.lcspigot.listeners.EventListener;
 import lc.lcspigot.listeners.ListenerData;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Arrays;
 
 public final class PlayerInteractListener implements EventListener {
 
@@ -58,10 +63,11 @@ public final class PlayerInteractListener implements EventListener {
         if (playerInGame != null) {
             if (playerInGame.getGame().getState() == GameState.IN_GAME) {
                 handleSpecialItems(event, playerInGame, event.getPlayer(), event.getItem(), event.getItem().getType());
+                handleAbilitiesInteract(event, playerInGame);
                 return;
             }
             if (playerInGame.getGame().getState() == GameState.PREGAME) {
-                event.getPlayer().openInventory(KitStorage.getStorage().inventory().getInventory());
+                handleWithPregameItems(event.getPlayer(), event.getMaterial());
                 return;
             }
             if (playerInGame.getGame().getState() == GameState.END_GAME) {
@@ -79,7 +85,45 @@ public final class PlayerInteractListener implements EventListener {
             player.openInventory(mapInventoryBuilder.build());
         }
     }
+    private void handleWithPregameItems(final Player player, final Material type) {
+        if (type == PregameStorage.getStorage().kitSelectedMaterial()) {
+            player.openInventory(KitStorage.getStorage().inventory().getInventory());;
+        }
+    }
 
+    private void handleAbilitiesInteract(final PlayerInteractEvent event, final PlayerInGame playerInGame){
+        if (event.getPlayer().getItemInHand().getType() == Material.MUSHROOM_SOUP && Arrays.asList(playerInGame.getGameAbilities()).contains(GameAbility.HEARTS_RECOVERY_WITH_SOUPS_2)) {
+            ItemStack bowl = new ItemStack(Material.BOWL, 1);
+            ItemMeta meta = bowl.getItemMeta();
+            int heal = 4;
+            int feed = 4;
+            if (event.getPlayer().getHealth() < event.getPlayer().getMaxHealth() - 1.0D) {
+                if (event.getPlayer().getHealth() < event.getPlayer().getMaxHealth() - heal + 1.0D) {
+                    event.getPlayer().getItemInHand().setType(Material.BOWL);
+                    event.getPlayer().getItemInHand().setItemMeta(meta);
+                    event.getPlayer().setItemInHand(bowl);
+                    event.getPlayer().setHealth(event.getPlayer().getHealth() + heal);
+                } else if (event.getPlayer().getHealth() < event.getPlayer().getMaxHealth() && event.getPlayer().getHealth() > event.getPlayer().getMaxHealth() - heal) {
+                    event.getPlayer().setHealth(event.getPlayer().getMaxHealth());
+                    event.getPlayer().getItemInHand().setType(Material.BOWL);
+                    event.getPlayer().getItemInHand().setItemMeta(meta);
+                    event.getPlayer().setItemInHand(bowl);
+                }
+            } else if (event.getPlayer().getHealth() == event.getPlayer().getMaxHealth() && event.getPlayer().getFoodLevel() < 20) {
+                if (event.getPlayer().getFoodLevel() < 20 - feed + 1) {
+                    event.getPlayer().setFoodLevel(event.getPlayer().getFoodLevel() + feed);
+                    event.getPlayer().getItemInHand().setType(Material.BOWL);
+                    event.getPlayer().getItemInHand().setItemMeta(meta);
+                    event.getPlayer().setItemInHand(bowl);
+                } else if (event.getPlayer().getFoodLevel() < 20 && event.getPlayer().getFoodLevel() > 20 - feed) {
+                    event.getPlayer().setFoodLevel(20);
+                    event.getPlayer().getItemInHand().setType(Material.BOWL);
+                    event.getPlayer().getItemInHand().setItemMeta(meta);
+                    event.getPlayer().setItemInHand(bowl);
+                }
+            }
+        }
+    }
     private boolean handleSpecialItems(final PlayerInteractEvent event, final PlayerInGame game, final Player player, final ItemStack item, final Material material) {
         switch (material) {
             case COMPASS:

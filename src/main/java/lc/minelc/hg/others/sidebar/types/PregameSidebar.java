@@ -7,13 +7,12 @@ import org.bukkit.entity.Player;
 
 import io.github.ichocomilk.lightsidebar.LightSidebarLib;
 import io.github.ichocomilk.lightsidebar.Sidebar;
-import lc.minelc.hg.database.mongodb.PlayerData;
+import lc.minelc.hg.database.mongodb.HGPlayerData;
 import lc.minelc.hg.database.mongodb.PlayerDataStorage;
 import lc.minelc.hg.game.GameInProgress;
 import lc.minelc.hg.game.GameState;
 import lc.minelc.hg.game.GameStorage;
 import lc.minelc.hg.others.sidebar.HgSidebar;
-import net.md_5.bungee.api.ChatColor;
 
 public final class PregameSidebar implements HgSidebar {
 
@@ -32,7 +31,7 @@ public final class PregameSidebar implements HgSidebar {
             return;
         }
 
-        final PlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
+        final HGPlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
 
         final String selectedKit = KitStorage.getStorage().kitsPerId().get(data.kitSelected).name();
         final String lcoins = String.valueOf(data.coins);

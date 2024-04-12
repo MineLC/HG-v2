@@ -3,6 +3,7 @@ package lc.minelc.hg.others.kits;
 import java.io.File;
 import java.util.List;
 
+import lc.minelc.hg.others.abilities.GameAbility;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -66,7 +67,7 @@ public final class StartKits {
             name.hashCode(),
             name,
             creator.create("inventory-item"),
-            createArmor(config, creator),
+            createArmor(config, creator), createAbilities(config),
             createItems(config),
             createPotionEffects(config, "effects"),
             config.getInt("cost"));
@@ -99,7 +100,7 @@ public final class StartKits {
         }
         final ItemStack[] items = new ItemStack[itemList.size()];
         int index = 0;
-    
+
         for (final String item : itemList) {
             final String[] split = StringUtils.split(item, ':');
             Material material = Material.getMaterial(Integer.parseInt(split[0]));
@@ -124,6 +125,19 @@ public final class StartKits {
             items[index++] = CraftItemStack.asNMSCopy(itemStack);
         }
         return items;
+    }
+    private GameAbility[] createAbilities(final FileConfiguration config) {
+        final List<String> abilitiesList = config.getStringList("abilities");
+        if (abilitiesList.isEmpty()) {
+            return null;
+        }
+        final GameAbility[] abilities = new GameAbility[abilitiesList.size()];
+        int index = 0;
+
+        for (final String ability : abilitiesList) {
+            abilities[index++] = GameAbility.valueOf(ability);
+        }
+        return abilities;
     }
 
     public PotionEffect[] createPotionEffects(final FileConfiguration config, final String section) {

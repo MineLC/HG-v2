@@ -2,13 +2,15 @@ package lc.minelc.hg.listeners;
 
 import java.util.concurrent.CompletableFuture;
 
+import obed.me.lccommons.api.entities.PlayerData;
+import obed.me.lccommons.api.services.UserProvider;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import lc.minelc.hg.database.mongodb.MongoDBManager;
-import lc.minelc.hg.database.mongodb.PlayerData;
+import lc.minelc.hg.database.mongodb.HGPlayerData;
 import lc.minelc.hg.database.mongodb.PlayerDataStorage;
 import lc.minelc.hg.game.GameInProgress;
 import lc.minelc.hg.game.GameStorage;
@@ -32,7 +34,9 @@ public final class PlayerQuitListener implements EventListener {
             GameStorage.getStorage().leave(game, player);
         }
         CompletableFuture.runAsync(() -> {
-            final PlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
+            final HGPlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
+            PlayerData playerData = UserProvider.getInstance().getUserByName(player.getName());
+            playerData.setCoins(data.coins);
             MongoDBManager.getManager().saveData(player.getUniqueId(), data);
         });
     }

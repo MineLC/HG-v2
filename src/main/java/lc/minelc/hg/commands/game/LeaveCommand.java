@@ -19,7 +19,7 @@ public final class LeaveCommand implements Command {
         final Player player = (Player)sender; 
         final GameInProgress game = GameStorage.getStorage().getGame(player.getUniqueId());
         if (game == null) {
-            send(player, "Actualmente no estás en ningun juego");
+            sendWithColor(player, "&eActualmente no estás en ningun juego");
             return;
         }
 
@@ -33,6 +33,6 @@ public final class LeaveCommand implements Command {
             player.hidePlayer(otherPlayer);
         }
         player.getActivePotionEffects().forEach((potion) -> player.removePotionEffect(potion.getType()));
-        send(player, "Has salido del juego");
+        sendWithColor(player, "&cHas salido del juego");
     }
 }

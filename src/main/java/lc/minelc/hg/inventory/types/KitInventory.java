@@ -4,7 +4,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
 import io.netty.util.collection.IntObjectHashMap;
-import lc.minelc.hg.database.mongodb.PlayerData;
+import lc.minelc.hg.database.mongodb.HGPlayerData;
 import lc.minelc.hg.database.mongodb.PlayerDataStorage;
 import lc.minelc.hg.messages.Messages;
 import lc.minelc.hg.others.kits.Kit;
@@ -26,7 +26,7 @@ public final class KitInventory {
         if (clickedKit == null) {
             return;
         }
-        final PlayerData data = PlayerDataStorage.getStorage().get(event.getWhoClicked().getUniqueId());
+        final HGPlayerData data = PlayerDataStorage.getStorage().get(event.getWhoClicked().getUniqueId());
 
         if (data.kits.contains(clickedKit.id())) {
             data.kitSelected = clickedKit.id();

@@ -19,5 +19,7 @@ cost: 250
 effects:
   - "REGENERATION:1:100000" # EFFECT:LEVEL:DURATIOn
 
+abilities:
+  - "HEARTS_RECOVERY_WITH_SOUPS_2"
 items:
   - "260:16"

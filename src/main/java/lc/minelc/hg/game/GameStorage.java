@@ -5,7 +5,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import lc.minelc.hg.database.mongodb.PlayerDataStorage;
 import lc.minelc.hg.game.countdown.invencibility.InvencibilityCountdown;
+import lc.minelc.hg.others.abilities.GameAbility;
+import lc.minelc.hg.others.kits.KitStorage;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -29,7 +32,12 @@ public final class GameStorage {
     }
 
     public void join(final String world, final GameInProgress game, final Player player) {
-        playersInGame.put(player.getUniqueId(), new PlayerInGame(game));
+        int kitSelected = PlayerDataStorage.getStorage().get(player.getUniqueId()).kitSelected;
+        GameAbility[] gameAbilities = KitStorage.getStorage().kitsPerId().get(kitSelected).gameAbilities();
+        PlayerInGame playerInGame = new PlayerInGame(game);
+        playerInGame.setGameAbilities(gameAbilities);
+        playersInGame.put(player.getUniqueId(), playerInGame);
+
         game.getPlayers().add(player);
 
         if (game.getState() != GameState.NONE) {
@@ -58,7 +66,7 @@ public final class GameStorage {
         final PlayerInGame playerInGame = playersInGame.remove(player.getUniqueId());
         final Set<Player> players = game.getPlayers();
         players.remove(player);
-
+        playerInGame.setGameAbilities(null);
         if (game.getCountdown() instanceof EndgameCountdown) {
             if (players.isEmpty()) {
                 stop(game);
@@ -71,6 +79,7 @@ public final class GameStorage {
                 game.getMapData().setGame(null);
                 plugin.getServer().getScheduler().cancelTask(game.getCountdown().getId());
             }
+            return;
         }
         if (player.getGameMode() != GameMode.SPECTATOR) {
             new GameDeath(plugin).death(

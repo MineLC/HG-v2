@@ -2,7 +2,7 @@ package lc.minelc.hg.others.levels;
 
 import org.bukkit.entity.Player;
 
-import lc.minelc.hg.database.mongodb.PlayerData;
+import lc.minelc.hg.database.mongodb.HGPlayerData;
 import lc.minelc.hg.database.mongodb.PlayerDataStorage;
 import net.md_5.bungee.api.ChatColor;
 
@@ -18,8 +18,8 @@ public class LevelStorage {
     }
 
     public void onDeath(final Player player) {
-        final PlayerData victim = PlayerDataStorage.getStorage().get(player.getUniqueId());
-        final PlayerData killer = (player.getKiller() != null)
+        final HGPlayerData victim = PlayerDataStorage.getStorage().get(player.getUniqueId());
+        final HGPlayerData killer = (player.getKiller() != null)
             ? PlayerDataStorage.getStorage().get(player.getKiller().getUniqueId())
             : null;
 
@@ -33,12 +33,12 @@ public class LevelStorage {
     }
 
     public void win(final Player player) {
-        final PlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
+        final HGPlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
         data.wins++;
         tryLevelUp(wins, data.wins, data, player);
     }
 
-    private void tryLevelUp(final LevelStat levelStat, int stats, final PlayerData data, final Player player) {
+    private void tryLevelUp(final LevelStat levelStat, int stats, final HGPlayerData data, final Player player) {
         if (stats % levelStat.need() == 0) {
             data.coins += levelStat.addlcoins();
             player.sendMessage(buildMessage(

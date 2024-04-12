@@ -25,19 +25,18 @@ public final class MongoDBManager {
         this.profiles = profiles;
     }
 
-    public PlayerData getData(final UUID uuid) {
+    public HGPlayerData getData(final UUID uuid) {
         final Document query = new Document();
         query.put("_id", uuid);
         final FindIterable<Document> results = profiles.find(query);
         final Document document = results.first();
 
         if (document == null) {
-            return PlayerData.createEmptyData();
+            return HGPlayerData.createEmptyData();
         }
 
-        final PlayerData data = new PlayerData();
+        final HGPlayerData data = new HGPlayerData();
 
-        data.coins = document.getInteger("coins", 0);
         data.kills = document.getInteger("kills", 0);
         data.deaths = document.getInteger("deaths", 0);
         data.wins = document.getInteger("wins", 0);
@@ -48,7 +47,7 @@ public final class MongoDBManager {
         return data;
     }
 
-    public void saveData(final UUID uuid, final PlayerData data) {
+    public void saveData(final UUID uuid, final HGPlayerData data) {
         final Document query = new Document();
         query.put("_id", uuid);
 
@@ -60,9 +59,8 @@ public final class MongoDBManager {
         profiles.updateOne(query, update, options);
     }
 
-    private Bson createUpdateQuery(final PlayerData data, final List<Integer> kits) {
+    private Bson createUpdateQuery(final HGPlayerData data, final List<Integer> kits) {
         return Updates.combine(
-            Updates.set("coins", data.coins),
             Updates.set("kills", data.kills),
             Updates.set("deaths", data.deaths),
             Updates.set("wins", data.wins),

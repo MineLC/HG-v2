@@ -1,5 +1,6 @@
 package lc.minelc.hg.others.kits;
 
+import lc.minelc.hg.others.abilities.GameAbility;
 import org.bukkit.potion.PotionEffect;
 
 import lc.minelc.hg.inventory.internal.InventoryCreator.Item;
@@ -10,6 +11,7 @@ public final record Kit(
     String name,
     Item inventoryItem,
     ItemStack[] armor,
+    GameAbility[] gameAbilities,
     ItemStack[] items,
     PotionEffect[] potionEffects,
     int cost

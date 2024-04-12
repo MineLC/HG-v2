@@ -112,3 +112,5 @@ rush:
     - " "
     - " &fTodos obtienen salto y velocidad 1 por &61 minuto"
     - " "
+special-items:
+  tracker: "&7Jugador: &a%player%&7. Distancia: &e%distance% &7bloques."
