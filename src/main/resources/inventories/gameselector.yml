@@ -1,7 +1,7 @@
 title: "Seleciona el mapa a jugar"
 
 states:
-endgame:
+  endgame:
     suffix: " &8| &c&lFINALIZANDO"
     item: "REDSTONE_BLOCK"
 
