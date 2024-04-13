@@ -26,6 +26,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 
+import static lc.minelc.hg.others.abilities.AbilitiesFunctions.*;
+
 public final class PlayerInteractListener implements EventListener {
 
     private final MapInventoryBuilder mapInventoryBuilder;
@@ -91,36 +93,29 @@ public final class PlayerInteractListener implements EventListener {
         }
     }
 
-    private void handleAbilitiesInteract(final PlayerInteractEvent event, final PlayerInGame playerInGame){
-        if (event.getPlayer().getItemInHand().getType() == Material.MUSHROOM_SOUP && Arrays.asList(playerInGame.getGameAbilities()).contains(GameAbility.HEARTS_RECOVERY_WITH_SOUPS_2)) {
-            ItemStack bowl = new ItemStack(Material.BOWL, 1);
-            ItemMeta meta = bowl.getItemMeta();
-            int heal = 4;
-            int feed = 4;
-            if (event.getPlayer().getHealth() < event.getPlayer().getMaxHealth() - 1.0D) {
-                if (event.getPlayer().getHealth() < event.getPlayer().getMaxHealth() - heal + 1.0D) {
-                    event.getPlayer().getItemInHand().setType(Material.BOWL);
-                    event.getPlayer().getItemInHand().setItemMeta(meta);
-                    event.getPlayer().setItemInHand(bowl);
-                    event.getPlayer().setHealth(event.getPlayer().getHealth() + heal);
-                } else if (event.getPlayer().getHealth() < event.getPlayer().getMaxHealth() && event.getPlayer().getHealth() > event.getPlayer().getMaxHealth() - heal) {
-                    event.getPlayer().setHealth(event.getPlayer().getMaxHealth());
-                    event.getPlayer().getItemInHand().setType(Material.BOWL);
-                    event.getPlayer().getItemInHand().setItemMeta(meta);
-                    event.getPlayer().setItemInHand(bowl);
-                }
-            } else if (event.getPlayer().getHealth() == event.getPlayer().getMaxHealth() && event.getPlayer().getFoodLevel() < 20) {
-                if (event.getPlayer().getFoodLevel() < 20 - feed + 1) {
-                    event.getPlayer().setFoodLevel(event.getPlayer().getFoodLevel() + feed);
-                    event.getPlayer().getItemInHand().setType(Material.BOWL);
-                    event.getPlayer().getItemInHand().setItemMeta(meta);
-                    event.getPlayer().setItemInHand(bowl);
-                } else if (event.getPlayer().getFoodLevel() < 20 && event.getPlayer().getFoodLevel() > 20 - feed) {
-                    event.getPlayer().setFoodLevel(20);
-                    event.getPlayer().getItemInHand().setType(Material.BOWL);
-                    event.getPlayer().getItemInHand().setItemMeta(meta);
-                    event.getPlayer().setItemInHand(bowl);
-                }
+    private void handleAbilitiesInteract(final PlayerInteractEvent event, final PlayerInGame playerInGame) {
+        GameAbility[] abilities = playerInGame.getGameAbilities();
+
+        for (GameAbility ability : abilities) {
+            switch (ability) {
+                case HEARTS_RECOVERY_WITH_SOUPS_2:
+                    heartRecovery(event.getPlayer(),2);
+                    break;
+                case HEARTS_RECOVERY_WITH_SOUPS_3:
+                    heartRecovery(event.getPlayer(), 3);
+                    break;
+                case TELEPORT_WITH_TORCH:
+                    teleportWithTorch(event);
+                case HIGH_JUMPS_WITH_FIREWORK:
+                    jumpWithFireworks(event);
+                case EAT_COOKIE:
+                    eatCookie(event);
+                case FIRE_THROW:
+                    firetrow(event);
+                // Agrega más casos según sea necesario para otras habilidades
+                default:
+                    // No se requiere acción para otras habilidades
+                    break;
             }
         }
     }

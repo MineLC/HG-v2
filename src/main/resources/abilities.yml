@@ -1,0 +1,108 @@
+AB:
+  EXPLODING_ARROWS:
+    desc: 'Flechas explotan contra el suelo.'
+  FAST_TREE_BREAK:
+    desc: 'Rompe arboles rapido'
+  DAMAGE_ENEMIES_WITH_SHOTS:
+    desc: 'Los disparos causan efectos al enemigo.'
+  FIRE_THROW:
+    desc: 'Lanza carga de fuego con click derecho.'
+  EAT_COOKIE:
+    desc: 'Al comer galleta ganas fuerza.'
+    duration: 10
+  GAIN_STRENGTH_WITH_FIRE:
+    desc: 'Ganas fuerza con el fuego y este no te quema.'
+  PORK_CHOPS_FROM_PIGS:
+    desc: 'Cerdos dropean 4 chuletas.'
+    amount: 4
+  FALL_DAMAGE:
+    desc: 'Al caer recibe 2 de daño y si hay alguien a 5m el resto.'
+  INSTANT_DEATH:
+    desc: 'Muerte instantanea al disparar de lejos.'
+    distance: 25
+  INSTANT_CROPS:
+    desc: 'Cultivos inmediatos.'
+  THUNDER_WITH_AXE:
+    desc: 'Truenos con hacha de diamante.'
+    cooldown: 6
+    expired: 'cooldown has not expired!'
+  LIFE_STEAL_ON_HIT:
+    desc: 'Roba vida del enemigo al pegarle.'
+  ITEM_THEFT:
+    desc: 'Con un palo puedes robar objetos a otros.'
+    chance: 8
+    cooldown: 15
+    expired: 'Espera 15 segundos para volver a robar!'
+    success: 'Item robado.'
+  HUNGER_RECOVERY:
+    desc: 'Al matar otros jugadores recuperas tu hambre.'
+  ITEM_THEFT_2:
+    desc: 'Con un palo puedes robar objetos a otros.'
+    chance: 10
+    cooldown: 10
+    expired: 'Espera 10 segundos para volver a robar!'
+    success: 'Item robado.'
+  INVISIBLE_WHEN_EATING_APPLE:
+    desc: "Al comer manzana te vuelves invisible."
+    cooldown: 30
+    expired: "cooldown has not expired!"
+    duration: 8
+    invisible: "You are now invisible!"
+    visible: "You are no longer invisible!"
+  MOB_TRANSFORMATION:
+    desc: "Transformacion en mob al pegarle con la mano sola."
+    disguise: "You are now disguised!"
+    undisguise: "You are no longer disguised!"
+  HIT_WITH_HANDS:
+    desc: "Con tus manos pegas igual que con espada de piedra."
+  POISON_PLAYERS:
+    desc: "Posibilidad de envenenar a otros jugadores."
+    chance: 12
+    duration: 13
+    damager: "Envenenado!"
+    defender: "Envenenado!"
+  MOBS_DO_NOT_ATTACK:
+    desc: "Mobs no atacan si no los atacas."
+  NIGHT_VISION_WITH_POTATO:
+    desc: "Ya puedes ver en la oscuridad, comiste una papa magica"
+    duration: 10
+  FREEZE_PLAYERS:
+    desc: "Congela jugadores con reloj a 25 bloques, durante 5s!"
+    radius: 25
+    duration: 5
+    cooldown: 80
+    expired: "Se puede utilizar cada 80 segundos!"
+    success: "Todos los jugadores han sido congelados 8s en un radio de 20 blocks!"
+    target: 'The time has been frozen by <player> for 10 seconds!'
+    move: "Estas congelado!"
+    unfrozen: "Ya no estas congelado!"
+  EXPLODE_ON_DEATH:
+    desc: 'Explotas al morir!'
+    burn: true
+  GAIN_STRENGTH_2_WITH_FIRE:
+    desc: 'Ganas fuerza 2 con el fuego y este no te quema.'
+  TELEPORT_WITH_TORCH:
+    desc: 'Al hacer click a la antorcha seras teletransportado.'
+    cooldown: 30
+    expired: 'Ahora se puede volver a usar!'
+    distance: 40
+  HIGH_JUMPS_WITH_FIREWORK:
+    desc: 'Grandes saltos al usar el fuego artificial.'
+  HEARTS_RECOVERY_WITH_SOUPS_2:
+    desc: 'Recuperas 2 corazones al comer sopas.'
+  HEARTS_RECOVERY_WITH_SOUPS_3:
+    desc: 'Recuperas 3 corazones al comer sopas.'
+  WEAKEN_PLAYERS:
+    desc: 'Posibilidad de debilitar a otros jugadores.'
+    chance: 12
+    duration: 15
+    damager: 'Debilitado!'
+    defender: 'Debilitado!'
+  BLIND_PLAYERS:
+    desc: 'Posibilidad de cegar a otros jugadores.'
+    chance: 12
+    duration: 7
+    damager: 'Cegado!'
+    defender: 'Cegado!'
+  GENERATE_COBWEBS_WITH_SNOWBALLS:
+    desc: 'Generar una telaraña con las bolas de nieve.'
