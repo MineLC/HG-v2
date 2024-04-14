@@ -2,19 +2,19 @@ title: "Seleciona el mapa a jugar"
 
 states:
   endgame:
-    suffix: " &c&lFINALIZANDO"
+    suffix: " &8| &c&lFINALIZANDO"
     item: "REDSTONE_BLOCK"
 
   in_game:
-    suffix: " &a&lEN JUEGO"
+    suffix: " &8| &a&lEN JUEGO"
     item: "EMERALD_BLOCK"
 
   pregame:
-    suffix: " &e&lPREGAME"
+    suffix: " &8| &e&lPREGAME"
     item: "GOLD_BLOCK"
 
   none:
-    suffix: " &7&lSIN EMPEZAR"
+    suffix: " &8| &7&lESPERANDO"
     item: "COAL_BLOCK"
 
 games:

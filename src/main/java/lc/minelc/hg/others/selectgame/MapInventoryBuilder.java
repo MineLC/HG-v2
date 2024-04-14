@@ -54,7 +54,7 @@ public final class MapInventoryBuilder {
         final ItemStack item = new ItemStack(state.material(), (game == null) ? 0 : game.getPlayers().size());
         final ItemMeta meta = item.getItemMeta();
 
-        meta.setDisplayName(ChatColor.GREEN + map.toString() + state.suffix());
+        meta.setDisplayName(ChatColor.GREEN + map.getName() + state.suffix());
         if (game == null) {
             meta.setLore(parseLore(0, 0, map.getMaxPlayers(), gameState));
         } else {

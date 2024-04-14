@@ -19,7 +19,7 @@ import com.grinderwolf.swm.plugin.SWMPlugin;
 
 import lc.minelc.hg.ArenaHGPlugin;
 import lc.minelc.hg.game.GameManagerThread;
-
+import lc.minelc.hg.messages.Messages;
 import lc.minelc.hg.utils.EntityLocation;
 
 public final class StartMaps {
@@ -72,6 +72,7 @@ public final class StartMaps {
                     plugin.getConfig().getInt("max-players-per-map"),
                     data.borderSize(),
                     index,
+                    Messages.color(data.name()),
                     data.world()
                 );
 

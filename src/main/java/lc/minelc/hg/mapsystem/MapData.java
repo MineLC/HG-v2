@@ -5,11 +5,11 @@ import lc.minelc.hg.game.GameInProgress;
 import lc.minelc.hg.utils.EntityLocation;
 
 public final class MapData {
+    private final String name, worldName;
     private final EntityLocation[] spawns;
     private final int maxPlayers;
     private final int borderSize;
     private final int id;
-    private final String name;
 
     private GameInProgress gameInProgress;
 
@@ -18,13 +18,15 @@ public final class MapData {
         int maxPlayers,
         int borderSize,
         int id,
-        String name
+        String name,
+        String worldName
     ) {
         this.spawns = spawns;
         this.maxPlayers = maxPlayers;
         this.borderSize = borderSize;
         this.id = id;
         this.name = name;
+        this.worldName = worldName;
     }
 
     public void setGame(GameInProgress game) {
@@ -43,6 +45,10 @@ public final class MapData {
         return maxPlayers;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public EntityLocation[] getSpawns() {
         return spawns;
     }
@@ -59,6 +65,6 @@ public final class MapData {
 
     @Override
     public String toString() {
-        return name;
+        return worldName;
     }
 }

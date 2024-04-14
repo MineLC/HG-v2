@@ -45,7 +45,7 @@ public final class PregameSidebar implements HgSidebar {
                     .replace("%coin%", lcoins)
                     .replace("%players%", players)
                     .replace("%max%",maxPlayers)
-                    .replace("%map%", game.getMapData().toString());
+                    .replace("%map%", game.getMapData().getName());
         }
         final Sidebar sidebar = new LightSidebarLib().createSidebar();
         final Object[] lines = sidebar.createLines(parsedLines);
