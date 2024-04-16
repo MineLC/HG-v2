@@ -41,6 +41,7 @@ public final class SpawnStorage {
         inventory.setArmorContents(null);
         inventory.setItem(shopItem.slot(), shopItem.item());
         inventory.setItem(gameSelect.slot(), gameSelect.item());
+        player.teleport(location);
     }
 
     public boolean isInSpawn(final HumanEntity player) {
