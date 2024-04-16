@@ -11,6 +11,7 @@ import lc.minelc.hg.game.countdown.GameCountdown;
 import lc.minelc.hg.others.sidebar.SidebarStorage;
 import lc.minelc.hg.others.sidebar.SidebarType;
 import lc.minelc.hg.others.spawn.SpawnStorage;
+import lc.minelc.hg.others.tab.TabStorage;
 
 public class EndgameCountdown extends GameCountdown  {
 
@@ -33,6 +34,10 @@ public class EndgameCountdown extends GameCountdown  {
                 SpawnStorage.getStorage().sendToSpawn(player);
                 SidebarStorage.getStorage().getSidebar(SidebarType.SPAWN).send(player);
                 GameStorage.getStorage().remove(player.getUniqueId());
+
+                TabStorage.getStorage().removePlayers(player, game.getPlayers());
+                TabStorage.getStorage().sendPlayerInfo(player, SpawnStorage.getStorage().getPlayers());        
+
                 player.setHealth(20);
                 player.setLevel(0);
                 player.setFoodLevel(20);

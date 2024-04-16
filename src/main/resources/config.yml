@@ -3,6 +3,7 @@ mongodb:
   connection-string: mongodb://127.0.0.1:27017/hg
 
 slime-loader: "mongodb"
+join: " &ase ha conectado"
 
 tab:
   header:

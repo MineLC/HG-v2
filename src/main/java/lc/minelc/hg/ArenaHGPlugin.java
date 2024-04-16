@@ -3,7 +3,6 @@ package lc.minelc.hg;
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
-import lc.minelc.hg.others.abilities.AbilitiesFunctions;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -81,7 +80,6 @@ public final class ArenaHGPlugin extends JavaPlugin {
         new StartSidebar(this).load();
         new StartEvents(this).load();
         new StartMaps(this, slimePlugin).load();
-        new AbilitiesFunctions(this);
 
         final MapInventoryBuilder mapInventoryBuilder = new StartMapInventories().load(this);
 
