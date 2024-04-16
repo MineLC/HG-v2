@@ -3,6 +3,9 @@ package lc.minelc.hg;
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
+import lc.minelc.hg.messages.Messages;
+import lc.minelc.hg.others.abilities.AbilitiesFunctions;
+import lc.minelc.hg.others.tab.StartTab;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -80,6 +83,8 @@ public final class ArenaHGPlugin extends JavaPlugin {
         new StartSidebar(this).load();
         new StartEvents(this).load();
         new StartMaps(this, slimePlugin).load();
+        new StartTab().load(this);
+        new AbilitiesFunctions(this);
 
         final MapInventoryBuilder mapInventoryBuilder = new StartMapInventories().load(this);
 
@@ -108,7 +113,7 @@ public final class ArenaHGPlugin extends JavaPlugin {
         listeners.register(new PlayerInteractListener(builder), true);
 
         listeners.register(new PlayerBreakListener(), true);
-        listeners.register(new PlayerJoinListener(getConfig().getStringList("tab.header"), getConfig().getStringList("tab.footer")), true);  
+        listeners.register(new PlayerJoinListener(Messages.color(getConfig().getString("join"))), true);
         listeners.register(new PlayerQuitListener(), true);  
         listeners.register(new PlayerDropitemListener(), true);  
         listeners.register(new PlayerChatListener(), true);

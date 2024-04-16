@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
@@ -108,6 +109,7 @@ public final class StartKits {
 
     private ItemStack[] createItems(final FileConfiguration config) {
         final List<String> itemList = config.getStringList("items");
+
         if (itemList.isEmpty()) {
             return null;
         }
@@ -116,32 +118,44 @@ public final class StartKits {
 
         for (final String item : itemList) {
             final String[] split = StringUtils.split(item, ':');
-            Material material = Material.getMaterial(Integer.parseInt(split[0]));
-            if (material == null) {
-                material = Material.STONE;
-            }
-            int amount = 1;
-            if (split.length >= 2) {
-                int newAmount = Integer.parseInt(split[1]);
-                amount = (newAmount == -1) ? 1 : newAmount;
-            }
-            final org.bukkit.inventory.ItemStack itemStack = new org.bukkit.inventory.ItemStack(material, amount);
-            if (material.equals(Material.POTION)){
-                String[] splitPotion = StringUtils.split(split[0], ",");
-                Potion meta = new Potion(PotionType.getByEffect(PotionEffectType.getById(Integer.parseInt(splitPotion[1])))); // Tipo de poción, puedes cambiarlo
-                meta.setSplash(Boolean.parseBoolean(splitPotion[2])); // Hacer que sea arrojadiza
-                meta.apply(itemStack);
-            }
-            if (split.length == 4) {
-                Enchantment enchantment = Enchantment.getByName(split[2]);
-                if (enchantment == null) {
-                    Logger.warn("The enchant type: " + split[2] + " don't exist");
-                } else {
-                    int level = Integer.parseInt(split[3]);
-                    itemStack.addUnsafeEnchantment(enchantment, (level == 0) ? 1 : level);
+            Material material = null;
+            if (isSplitable(split[0])){
+                String materialPotion = split[0];
+                String[] splitPotion = StringUtils.split(materialPotion, ",");
+                Potion splash = new Potion(PotionType.getByEffect(PotionEffectType.getByName(splitPotion[1])), 1);
+                splash.setSplash(true);
+                int amount = 1;
+                if (split.length >= 2) {
+                    int newAmount = Integer.parseInt(split[1]);
+                    amount = (newAmount == -1) ? 1 : newAmount;
                 }
+                org.bukkit.inventory.ItemStack itemStack = splash.toItemStack(amount);
+                items[index++] = CraftItemStack.asNMSCopy(itemStack);
+            }else{
+                material = Material.getMaterial(Integer.parseInt(split[0]));
+                if (material == null) {
+                    material = Material.STONE;
+                }
+                int amount = 1;
+                if (split.length >= 2) {
+                    int newAmount = Integer.parseInt(split[1]);
+                    amount = (newAmount == -1) ? 1 : newAmount;
+                }
+                org.bukkit.inventory.ItemStack itemStack = new org.bukkit.inventory.ItemStack(material, amount);
+
+                if (split.length == 4) {
+                    Enchantment enchantment = Enchantment.getByName(split[2]);
+                    if (enchantment == null) {
+                        Logger.warn("The enchant type: " + split[2] + " don't exist");
+                    } else {
+                        int level = Integer.parseInt(split[3]);
+                        itemStack.addUnsafeEnchantment(enchantment, (level == 0) ? 1 : level);
+                    }
+                }
+                items[index++] = CraftItemStack.asNMSCopy(itemStack);
             }
-            items[index++] = CraftItemStack.asNMSCopy(itemStack);
+
+
         }
         return items;
     }
@@ -186,5 +200,18 @@ public final class StartKits {
             potionEffects[index++] = new PotionEffect(type, duration, level);
         }
         return potionEffects;
+    }
+    public static boolean isSplitable(String str) {
+        // Verifica si el string es nulo o vacío
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        // Verifica si el string contiene al menos una coma
+        for (char c : str.toCharArray()) {
+            if (c == ',') {
+                return true;
+            }
+        }
+        return false;
     }
 }
