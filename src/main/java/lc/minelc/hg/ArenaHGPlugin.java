@@ -25,11 +25,11 @@ import lc.minelc.hg.game.GameManagerThread;
 import lc.minelc.hg.game.StartGameData;
 import lc.minelc.hg.game.pregame.StartPreGameData;
 import lc.minelc.hg.listeners.ItemPickupListener;
-import lc.minelc.hg.listeners.PlayerBreakListener;
 import lc.minelc.hg.listeners.PlayerChatListener;
 import lc.minelc.hg.listeners.PlayerDropitemListener;
 import lc.minelc.hg.listeners.PlayerInteractListener;
 import lc.minelc.hg.listeners.PlayerJoinListener;
+import lc.minelc.hg.listeners.PlayerJoinTabInfoListener;
 import lc.minelc.hg.listeners.PlayerQuitListener;
 import lc.minelc.hg.listeners.PlayerSaturationEvent;
 import lc.minelc.hg.listeners.inventory.PlayerInventoryClickListener;
@@ -39,6 +39,7 @@ import lc.minelc.hg.listeners.pvp.damage.EntityDamageListener;
 import lc.minelc.hg.listeners.pvp.damage.PlayerDamageByPlayerListener;
 import lc.minelc.hg.mapsystem.MapCreatorData;
 import lc.minelc.hg.mapsystem.StartMaps;
+import lc.minelc.hg.messages.Messages;
 import lc.minelc.hg.messages.StartMessages;
 import lc.minelc.hg.others.deaths.StartDeaths;
 import lc.minelc.hg.others.events.StartEvents;
@@ -48,6 +49,7 @@ import lc.minelc.hg.others.selectgame.MapInventoryBuilder;
 import lc.minelc.hg.others.selectgame.StartMapInventories;
 import lc.minelc.hg.others.sidebar.StartSidebar;
 import lc.minelc.hg.others.spawn.StartSpawn;
+import lc.minelc.hg.others.tab.StartTab;
 
 public final class ArenaHGPlugin extends JavaPlugin {
 
@@ -69,22 +71,27 @@ public final class ArenaHGPlugin extends JavaPlugin {
                 getServer().getScheduler().runTask(this, () -> Logger.error(e));
             }
         });
-
-        new StartMessages().load(this);
-        new StartGameData().load(this);
-        new StartKits(this).load();
-        new StartDeaths(this).load(this);
-        new StartSpawn(this).loadItems();
-        new StartLevels(this).load();
-        new StartPreGameData().loadItems(this);
-        new StartSidebar(this).load();
-        new StartEvents(this).load();
-        new StartMaps(this, slimePlugin).load();
-
-        final MapInventoryBuilder mapInventoryBuilder = new StartMapInventories().load(this);
-
-        loadCommands();
-        registerBasicListeners(mapInventoryBuilder);
+        try {
+            new StartMessages().load(this);
+            new StartGameData().load(this);
+            new StartKits(this).load();
+            new StartDeaths(this).load(this);
+            new StartSpawn(this).loadItems();
+            new StartLevels(this).load();
+            new StartPreGameData().loadItems(this);
+            new StartSidebar(this).load();
+            new StartEvents(this).load();
+            new StartMaps(this, slimePlugin).load();
+            new StartTab().load(this);
+    
+            final MapInventoryBuilder mapInventoryBuilder = new StartMapInventories().load(this);
+    
+            loadCommands();
+            registerBasicListeners(mapInventoryBuilder);
+    
+        } catch (Exception e) {
+            Logger.error(e);
+        }
 
         getServer().getScheduler().runTaskLater(this, () -> {
             try {
@@ -107,13 +114,13 @@ public final class ArenaHGPlugin extends JavaPlugin {
         listeners.register(new PlayerInventoryClickListener(), true);
         listeners.register(new PlayerInteractListener(builder), true);
 
-        listeners.register(new PlayerBreakListener(), true);
-        listeners.register(new PlayerJoinListener(getConfig().getStringList("tab.header"), getConfig().getStringList("tab.footer")), true);  
+        listeners.register(new PlayerJoinListener(Messages.color(getConfig().getString("join"))), true);  
         listeners.register(new PlayerQuitListener(), true);  
         listeners.register(new PlayerDropitemListener(), true);  
         listeners.register(new PlayerChatListener(), true);
         listeners.register(new PlayerSaturationEvent(), true);
         listeners.register(new ItemPickupListener(), true);
+        listeners.register(new PlayerJoinTabInfoListener(), false);
 
         listeners.cancelEvent(BlockPhysicsEvent.class);
         listeners.cancelEvent(BlockGrowEvent.class);

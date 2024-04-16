@@ -11,6 +11,7 @@ import lc.minelc.hg.game.GameStorage;
 import lc.minelc.hg.others.sidebar.SidebarStorage;
 import lc.minelc.hg.others.sidebar.SidebarType;
 import lc.minelc.hg.others.spawn.SpawnStorage;
+import lc.minelc.hg.others.tab.TabStorage;
 
 public final class LeaveCommand implements Command {
 
@@ -26,6 +27,9 @@ public final class LeaveCommand implements Command {
         GameStorage.getStorage().leave(game, player);
         SpawnStorage.getStorage().sendToSpawn(player);
         SidebarStorage.getStorage().getSidebar(SidebarType.SPAWN).send(player);
+
+        TabStorage.getStorage().removePlayers(player, game.getPlayers());
+        TabStorage.getStorage().sendPlayerInfo(player, SpawnStorage.getStorage().getPlayers());
 
         final Set<Player> players = game.getPlayers();
         for (final Player otherPlayer : players) {
