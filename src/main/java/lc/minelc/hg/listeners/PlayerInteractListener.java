@@ -106,12 +106,19 @@ public final class PlayerInteractListener implements EventListener {
                     break;
                 case TELEPORT_WITH_TORCH:
                     teleportWithTorch(event);
+                    break;
                 case HIGH_JUMPS_WITH_FIREWORK:
                     jumpWithFireworks(event);
+                    break;
                 case EAT_COOKIE:
                     eatCookie(event);
+                    break;
                 case FIRE_THROW:
                     firetrow(event);
+                    break;
+                case THUNDER_WITH_AXE:
+                    thunderWithAxe(event);
+                    break;
                 // Agrega más casos según sea necesario para otras habilidades
                 default:
                     // No se requiere acción para otras habilidades

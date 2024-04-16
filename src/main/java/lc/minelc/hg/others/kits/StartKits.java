@@ -11,8 +11,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.material.MaterialData;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 import org.tinylog.Logger;
 
 import io.netty.util.collection.IntObjectHashMap;
@@ -32,24 +35,34 @@ public final class StartKits {
 
     public void load() {
         final File kitsFolder = new File(plugin.getDataFolder(), "kits");
-        tryCreateDefaultKits(kitsFolder);
+        try {
+            tryCreateDefaultKits(kitsFolder);
 
-        final FileConfiguration kitsInventory = plugin.loadConfig("inventories/kits");
+            final FileConfiguration kitsInventory = plugin.loadConfig("inventories/kits");
 
-        final InventoryCreator creator = new InventoryCreator(kitsInventory);
-        final Inventory inventory = creator.create("kits", "inventory");
+            final InventoryCreator creator = new InventoryCreator(kitsInventory);
+            final Inventory inventory = creator.create("kits", "inventory");
 
-        final File[] kitsFiles = kitsFolder.listFiles();
-        final IntObjectHashMap<Kit> kits = new IntObjectHashMap<>();
-        final IntObjectHashMap<Kit> kitsPerId = new IntObjectHashMap<>();
+            final File[] kitsFiles = kitsFolder.listFiles();
+            final IntObjectHashMap<Kit> kits = new IntObjectHashMap<>();
+            final IntObjectHashMap<Kit> kitsPerId = new IntObjectHashMap<>();
 
-        for (final File kitFile : kitsFiles) {
-            final Kit kit = createKit(YamlConfiguration.loadConfiguration(kitFile));
-            kitsPerId.put(kit.name().hashCode(), kit);
-            inventory.setItem(kit.inventoryItem().slot(), kit.inventoryItem().item());
-            kits.put(kit.inventoryItem().slot(), kit);
+            for (final File kitFile : kitsFiles) {
+                try {
+                    final Kit kit = createKit(YamlConfiguration.loadConfiguration(kitFile));
+                    kitsPerId.put(kit.name().hashCode(), kit);
+                    inventory.setItem(kit.inventoryItem().slot(), kit.inventoryItem().item());
+                    kits.put(kit.inventoryItem().slot(), kit);
+                } catch (Exception e) {
+                    // Imprimir la excepción en la consola
+                    System.out.println("Error al cargar un kit: " + e.getMessage());
+                }
+            }
+            KitStorage.update(new KitStorage(new KitInventory(kits, inventory), kitsPerId));
+        } catch (Exception e) {
+            // Imprimir la excepción en la consola
+            System.out.println("Error al cargar los kits: " + e.getMessage());
         }
-        KitStorage.update(new KitStorage(new KitInventory(kits, inventory), kitsPerId));
     }
 
     private void tryCreateDefaultKits(File kitsFolder) {
@@ -113,6 +126,12 @@ public final class StartKits {
                 amount = (newAmount == -1) ? 1 : newAmount;
             }
             final org.bukkit.inventory.ItemStack itemStack = new org.bukkit.inventory.ItemStack(material, amount);
+            if (material.equals(Material.POTION)){
+                String[] splitPotion = StringUtils.split(split[0], ",");
+                Potion meta = new Potion(PotionType.getByEffect(PotionEffectType.getById(Integer.parseInt(splitPotion[1])))); // Tipo de poción, puedes cambiarlo
+                meta.setSplash(Boolean.parseBoolean(splitPotion[2])); // Hacer que sea arrojadiza
+                meta.apply(itemStack);
+            }
             if (split.length == 4) {
                 Enchantment enchantment = Enchantment.getByName(split[2]);
                 if (enchantment == null) {

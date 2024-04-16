@@ -1,0 +1,38 @@
+name: "adan"
+
+inventory-item:
+  slot: 1
+  item: "275"
+  name: "&e&lBarbaro"
+  lore:
+    - " "
+    - " &eVentajas:"
+    - " "
+    - " &8● &716x Manzanas"
+    - " &8● &7Regeneración 1 (Permanente)"
+    - " &7Habilidad: Romper Árboles Rápidamente"
+    - ""
+    - " &7Equipamiento:"
+    - "   - Espada de Hierro"
+    - "   - 16x Manzanas Doradas"
+    - "   - Armadura de Cuero"
+    - "   - Pantalones de Cuero"
+    - "   - Pala de Hierro"
+    - ""
+    - " &7Coste: &6250 &6&lLCoins"
+    - ""
+    - "&7Rareza: &3&lRARO"
+cost: 250
+
+effects:
+
+abilities:
+  - "FAST_TREE_BREAK"
+  - "HEARTS_RECOVERY_WITH_SOUPS_2"
+
+items:
+  - '272,1,16,1'
+  - '275,1,32,1'
+  - '300,1'
+  - '301,1'
+  - "345:1"
