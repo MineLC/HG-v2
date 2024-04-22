@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
 import lc.minelc.hg.messages.Messages;
-import lc.minelc.hg.others.abilities.AbilitiesFunctions;
 import lc.minelc.hg.others.tab.StartTab;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -28,8 +28,8 @@ import lc.minelc.hg.game.GameManagerThread;
 import lc.minelc.hg.game.StartGameData;
 import lc.minelc.hg.game.pregame.StartPreGameData;
 import lc.minelc.hg.listeners.ItemPickupListener;
-import lc.minelc.hg.listeners.PlayerBreakListener;
 import lc.minelc.hg.listeners.PlayerChatListener;
+import lc.minelc.hg.listeners.PlayerConsumeListener;
 import lc.minelc.hg.listeners.PlayerDropitemListener;
 import lc.minelc.hg.listeners.PlayerInteractListener;
 import lc.minelc.hg.listeners.PlayerJoinListener;
@@ -84,7 +84,6 @@ public final class ArenaHGPlugin extends JavaPlugin {
         new StartEvents(this).load();
         new StartMaps(this, slimePlugin).load();
         new StartTab().load(this);
-        new AbilitiesFunctions(this);
 
         final MapInventoryBuilder mapInventoryBuilder = new StartMapInventories().load(this);
 
@@ -112,12 +111,12 @@ public final class ArenaHGPlugin extends JavaPlugin {
         listeners.register(new PlayerInventoryClickListener(), true);
         listeners.register(new PlayerInteractListener(builder), true);
 
-        listeners.register(new PlayerBreakListener(), true);
         listeners.register(new PlayerJoinListener(Messages.color(getConfig().getString("join"))), true);
         listeners.register(new PlayerQuitListener(), true);  
         listeners.register(new PlayerDropitemListener(), true);  
         listeners.register(new PlayerChatListener(), true);
         listeners.register(new PlayerSaturationEvent(), true);
+        listeners.register(new PlayerConsumeListener(), true);
         listeners.register(new ItemPickupListener(), true);
 
         listeners.cancelEvent(BlockPhysicsEvent.class);

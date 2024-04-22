@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-import io.github.ichocomilk.lightsidebar.LightSidebarLib;
 import lc.minelc.hg.ArenaHGPlugin;
 import lc.minelc.hg.messages.Messages;
 import lc.minelc.hg.others.sidebar.types.GameSidebar;

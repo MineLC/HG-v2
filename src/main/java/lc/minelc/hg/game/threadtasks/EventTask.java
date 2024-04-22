@@ -16,24 +16,24 @@ public final class EventTask {
 
     public void execute(final MapData map, final long time) {
         final GameInProgress game = map.getGameInProgress();
-        if (game.getState() != GameState.IN_GAME || !game.getInvincibility() || game.getCurrentEventIndex() >= game.getEvents().length) {
+        if (game.getState() != GameState.IN_GAME || game.getNextEvent() == null) {
             return;
         }
 
         final long secondsTranscurred = (time - game.getStartedTime()) / 1000;
 
-        if (secondsTranscurred >= game.getCurrentEvent().secondToStart()) {
-            EventStorage.getStorage().loadEvent(game, game.getCurrentEvent().eventType());
+        if (secondsTranscurred >= game.getNextEvent().secondToStart()) {
+            EventStorage.getStorage().loadEvent(game, game.getNextEvent());
             game.nextEvent();
             return;
         }
 
-        final long secondsToStart = game.getCurrentEvent().secondToStart() - secondsTranscurred;
+        final long secondsToStart = game.getNextEvent().secondToStart() - secondsTranscurred;
 
         if (secondsToStart < 10) {
             final String message = Messages.get("events.spam-message")
-                    .replace("%event%", game.getCurrentEvent().name())
-                    .replace("%time%", String.valueOf(secondsToStart));
+                .replace("%event%", game.getNextEvent().name())
+                .replace("%time%", String.valueOf(secondsToStart));
 
             final Set<Player> players = game.getPlayers();
             Messages.sendNoGet(players, message);
@@ -44,8 +44,7 @@ public final class EventTask {
         }
         if (secondsTranscurred % 60 == 0) {
             Messages.sendNoGet(game.getPlayers(), Messages.get("events.time-remain")
-                    .replace("%time%", GameCountdown.parseTime(secondsToStart)));
+            .replace("%time%", GameCountdown.parseTime(secondsToStart)));
         }
-
     }
 }

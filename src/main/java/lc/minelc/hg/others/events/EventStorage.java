@@ -51,13 +51,14 @@ public final class EventStorage {
         return events;
     }
 
-    public void loadEvent(final GameInProgress game, final GameEventType type) {
+    public void loadEvent(final GameInProgress game, final GameEvent event) {
         if (game.getState() != GameState.IN_GAME) {
             return;
         }
         final EventCountdown countdown = new EventCountdown(game);
+        countdown.setDuration(event.duration());
 
-        switch (type) {
+        switch (event.eventType()) {
             case DEATHMATCH:
                 countdown.setTask(new DeathMatchEvent(game, deathMatchData, plugin));
                 Messages.send(game.getPlayers(), "death-match.start-message");

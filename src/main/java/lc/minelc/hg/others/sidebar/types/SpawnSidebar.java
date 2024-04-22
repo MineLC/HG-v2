@@ -2,7 +2,6 @@ package lc.minelc.hg.others.sidebar.types;
 
 import java.util.Collection;
 
-import lc.minelc.hg.others.kits.KitStorage;
 import org.bukkit.entity.Player;
 
 import io.github.ichocomilk.lightsidebar.LightSidebarLib;
@@ -27,7 +26,6 @@ public final class SpawnSidebar implements HgSidebar {
         final String[] parsedLines = new String[lines.length];
         final HGPlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
 
-        final String selectedKit = KitStorage.getStorage().kitsPerId().get(data.kitSelected).name();
         final String coins = String.valueOf(data.coins);
         final String level = String.valueOf(data.level);
         final String wins =  String.valueOf(data.wins);

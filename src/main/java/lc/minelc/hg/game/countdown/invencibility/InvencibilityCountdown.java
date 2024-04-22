@@ -2,20 +2,13 @@ package lc.minelc.hg.game.countdown.invencibility;
 
 import lc.minelc.hg.game.countdown.CountdownCallback;
 import lc.minelc.hg.game.countdown.GameCountdown;
-import lc.minelc.hg.game.countdown.pregame.PreGameCountdown;
 import lc.minelc.hg.messages.Messages;
-import lc.minelc.hg.others.sidebar.HgSidebar;
-import lc.minelc.hg.others.sidebar.SidebarStorage;
-import lc.minelc.hg.others.sidebar.SidebarType;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.Set;
-
-import static org.bukkit.ChatColor.GREEN;
-import static org.bukkit.ChatColor.YELLOW;
 
 public class InvencibilityCountdown extends GameCountdown {
 
@@ -25,15 +18,13 @@ public class InvencibilityCountdown extends GameCountdown {
     private final Set<Player> players;
     private final InvencibilityCountdown.Data data;
 
-    private final CountdownCallback start;
     private final CountdownCallback complete;
 
-    public InvencibilityCountdown(InvencibilityCountdown.Data data, Set<Player> players, CountdownCallback startCountDown, CountdownCallback completeCountdown) {
+    public InvencibilityCountdown(InvencibilityCountdown.Data data, Set<Player> players, CountdownCallback completeCountdown) {
         this.data = data;
         this.waitingCountdown = data.waitingTime;
         this.countdown = data.waitingTime;
         this.players = players;
-        this.start = startCountDown;
         this.complete = completeCountdown;
     }
 

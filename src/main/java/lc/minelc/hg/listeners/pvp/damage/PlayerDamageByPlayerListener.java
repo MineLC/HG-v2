@@ -2,7 +2,8 @@ package lc.minelc.hg.listeners.pvp.damage;
 
 import lc.minelc.hg.game.PlayerInGame;
 import lc.minelc.hg.others.abilities.GameAbility;
-import org.bukkit.Bukkit;
+import lc.minelc.hg.others.abilities.HitAbilities;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -14,11 +15,9 @@ import lc.minelc.hg.game.GameStorage;
 import lc.minelc.hg.others.events.GameEventType;
 import lc.lcspigot.listeners.EventListener;
 import lc.lcspigot.listeners.ListenerData;
-import org.bukkit.event.player.PlayerInteractEvent;
-
-import static lc.minelc.hg.others.abilities.AbilitiesFunctions.*;
 
 public final class PlayerDamageByPlayerListener implements EventListener {
+    private final HitAbilities pvpAbilities = new HitAbilities();
 
     @ListenerData(
         priority = EventPriority.NORMAL,
@@ -41,37 +40,24 @@ public final class PlayerDamageByPlayerListener implements EventListener {
             event.setDamage(0);
         }
 
-        if (game.getCurrentEvent() != null && game.getCurrentEvent().eventType() == GameEventType.CRITICAL) {
+        if (game.getActiveEvent() != null && game.getActiveEvent().eventType() == GameEventType.CRITICAL) {
             event.setDamage(event.getDamage() + (event.getDamage() / 100) * 25);
         }
 
         if (event.getDamager() instanceof Player) {
             final PlayerInGame playerInGame = GameStorage.getStorage().getPlayerInGame(event.getDamager().getUniqueId());
-            handleAbilitiesInteract(event,playerInGame);
+            handleAbilitiesInteract(event, playerInGame);
         }
     }
     private void handleAbilitiesInteract(final EntityDamageByEntityEvent event, final PlayerInGame playerInGame) {
-        GameAbility[] abilities = playerInGame.getGameAbilities();
+        final GameAbility[] abilities = playerInGame.getGameAbilities();
 
-        for (GameAbility ability : abilities) {
+        for (final GameAbility ability : abilities) {
             switch (ability) {
-                case BLIND_PLAYERS:
-                    blidingPlayers(event);
+                case CANIBAL:
+                    pvpAbilities.canibal(event);
                     break;
-                case WEAKEN_PLAYERS:
-                    weakenPlayers(event);
-                    break;
-                case ITEM_THEFT:
-                    stealItemsWithStick(event);
-                    break;
-                case ITEM_THEFT_2:
-                    stealItems(event);
-                    break;
-                case INSTANT_DEATH:
-                    headShot(event, playerInGame);
-                    // Agrega más casos según sea necesario para otras habilidades
                 default:
-                    // No se requiere acción para otras habilidades
                     break;
             }
         }

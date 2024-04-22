@@ -11,8 +11,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.material.MaterialData;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -81,7 +79,7 @@ public final class StartKits {
             name.hashCode(),
             name,
             creator.create("inventory-item"),
-            createArmor(config, creator), createAbilities(config),
+            createArmor(config, creator), createAbilities(config, name),
             createItems(config),
             createPotionEffects(config, "effects"),
             config.getInt("cost"));
@@ -123,7 +121,9 @@ public final class StartKits {
                 String materialPotion = split[0];
                 String[] splitPotion = StringUtils.split(materialPotion, ",");
                 Potion splash = new Potion(PotionType.getByEffect(PotionEffectType.getByName(splitPotion[1])), 1);
-                splash.setSplash(true);
+                if (splitPotion.length >= 3) {
+                    splash.setSplash(Boolean.parseBoolean(splitPotion[2]));
+                }
                 int amount = 1;
                 if (split.length >= 2) {
                     int newAmount = Integer.parseInt(split[1]);
@@ -159,7 +159,7 @@ public final class StartKits {
         }
         return items;
     }
-    private GameAbility[] createAbilities(final FileConfiguration config) {
+    private GameAbility[] createAbilities(final FileConfiguration config, final String kitname) {
         final List<String> abilitiesList = config.getStringList("abilities");
         if (abilitiesList.isEmpty()) {
             return null;
@@ -168,7 +168,12 @@ public final class StartKits {
         int index = 0;
 
         for (final String ability : abilitiesList) {
-            abilities[index++] = GameAbility.valueOf(ability);
+            final GameAbility gameAbility = GameAbility.valueOf(ability);
+            if (gameAbility == null) {
+                Logger.warn("The ability " + ability + " don't exist. Kit: " + kitname);
+                return null;
+            }
+            abilities[index++] = gameAbility;
         }
         return abilities;
     }

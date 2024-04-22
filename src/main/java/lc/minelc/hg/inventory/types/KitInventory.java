@@ -27,8 +27,7 @@ public final class KitInventory {
             return;
         }
         final HGPlayerData data = PlayerDataStorage.getStorage().get(event.getWhoClicked().getUniqueId());
-
-        if (data.kits.contains(clickedKit.id())) {
+        if (clickedKit.cost() <= 0 || data.kits.contains(clickedKit.id())) {
             data.kitSelected = clickedKit.id();
             event.getWhoClicked().sendMessage(Messages.get("kit.selected").replace("%name%", clickedKit.name()));
             return;

@@ -2,6 +2,8 @@ package lc.minelc.hg.listeners;
 
 import lc.minelc.hg.game.pregame.PregameStorage;
 import lc.minelc.hg.others.abilities.GameAbility;
+import lc.minelc.hg.others.abilities.InteractAbilities;
+
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -22,14 +24,10 @@ import lc.minelc.hg.others.specialitems.TrackerItem;
 
 import lc.lcspigot.listeners.EventListener;
 import lc.lcspigot.listeners.ListenerData;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.Arrays;
-
-import static lc.minelc.hg.others.abilities.AbilitiesFunctions.*;
 
 public final class PlayerInteractListener implements EventListener {
 
+    private final InteractAbilities interactAbilities = new InteractAbilities();
     private final MapInventoryBuilder mapInventoryBuilder;
 
     public PlayerInteractListener(MapInventoryBuilder mapInventoryBuilder) {
@@ -64,8 +62,9 @@ public final class PlayerInteractListener implements EventListener {
 
         if (playerInGame != null) {
             if (playerInGame.getGame().getState() == GameState.IN_GAME) {
+                final Material material = event.getItem().getType();
                 handleSpecialItems(event, playerInGame, event.getPlayer(), event.getItem(), event.getItem().getType());
-                handleAbilitiesInteract(event, playerInGame);
+                handleAbilitiesInteract(event, playerInGame, material);
                 return;
             }
             if (playerInGame.getGame().getState() == GameState.PREGAME) {
@@ -93,35 +92,24 @@ public final class PlayerInteractListener implements EventListener {
         }
     }
 
-    private void handleAbilitiesInteract(final PlayerInteractEvent event, final PlayerInGame playerInGame) {
-        GameAbility[] abilities = playerInGame.getGameAbilities();
+    private void handleAbilitiesInteract(final PlayerInteractEvent event, final PlayerInGame playerInGame, final Material material) {
+        final GameAbility[] abilities = playerInGame.getGameAbilities();
 
         for (GameAbility ability : abilities) {
             switch (ability) {
-                case HEARTS_RECOVERY_WITH_SOUPS_2:
-                    heartRecovery(event.getPlayer(),2);
+                case HEARTS_SOUPS_2:
+                    interactAbilities.soup(event, material, 2);
                     break;
-                case HEARTS_RECOVERY_WITH_SOUPS_3:
-                    heartRecovery(event.getPlayer(), 3);
+                case HEARTS_SOUPS_3:
+                    interactAbilities.soup(event, material, 3);
                     break;
-                case TELEPORT_WITH_TORCH:
-                    teleportWithTorch(event);
+                case COOKIE_STRENGTH:
+                    interactAbilities.cookie(event, material);
                     break;
-                case HIGH_JUMPS_WITH_FIREWORK:
-                    jumpWithFireworks(event);
+                case FAST_GOLDEN_APPLE:
+                    interactAbilities.fastGoldenApple(event, material);
                     break;
-                case EAT_COOKIE:
-                    eatCookie(event);
-                    break;
-                case FIRE_THROW:
-                    firetrow(event);
-                    break;
-                case THUNDER_WITH_AXE:
-                    thunderWithAxe(event);
-                    break;
-                // Agrega más casos según sea necesario para otras habilidades
                 default:
-                    // No se requiere acción para otras habilidades
                     break;
             }
         }

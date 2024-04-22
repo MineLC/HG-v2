@@ -114,3 +114,7 @@ rush:
     - " "
 special-items:
   tracker: "&7Jugador: &a%player%&7. Distancia: &e%distance% &7bloques."
+
+
+abilities:
+  cookie: "&aAhora tienes fuerza 1 por 6s"

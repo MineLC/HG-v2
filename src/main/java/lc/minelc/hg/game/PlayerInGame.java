@@ -15,4 +15,16 @@ public final class PlayerInGame {
     PlayerInGame(GameInProgress game) {
         this.game = game;
     }
+
+    public boolean containsAbility(final GameAbility ability) {
+        if (gameAbilities == null) {
+            return false;
+        }
+        for (final GameAbility gameAbility : gameAbilities) {
+            if (gameAbility == ability) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

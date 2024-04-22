@@ -9,7 +9,9 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import lc.minelc.hg.game.GameInProgress;
 import lc.minelc.hg.game.GameState;
 import lc.minelc.hg.game.GameStorage;
+import lc.minelc.hg.game.PlayerInGame;
 import lc.minelc.hg.game.pregame.PregameStorage;
+import lc.minelc.hg.others.abilities.GameAbility;
 import lc.minelc.hg.others.spawn.SpawnStorage;
 import lc.lcspigot.listeners.EventListener;
 import lc.lcspigot.listeners.ListenerData;
@@ -32,11 +34,13 @@ public final class EntityDamageListener implements EventListener {
             return;
         }
 
-        final GameInProgress game = GameStorage.getStorage().getGame(player.getUniqueId());
-
-        if (game == null) {
+        final PlayerInGame playerInGame = GameStorage.getStorage().getPlayerInGame(player.getUniqueId());
+    
+        if (playerInGame == null) {
             return;
         }
+    
+        final GameInProgress game = playerInGame.getGame();
 
         if (game.getState() == GameState.PREGAME) {           
             event.setCancelled(true);
@@ -52,9 +56,12 @@ public final class EntityDamageListener implements EventListener {
             return;
         }
 
-        if (game.getState() == GameState.IN_GAME && game.getInvincibility()){
-            event.setCancelled(true);
-            event.setDamage(0);
+        if (game.getState() == GameState.IN_GAME) {
+            if (game.getInvincibility() || event.getCause() == DamageCause.FALL && playerInGame.containsAbility(GameAbility.NO_FALL_DAMAGE)) {
+                event.setCancelled(true);
+                event.setDamage(0);
+            }
+            return;
         }
 
         if (game.getState() == GameState.END_GAME) {
