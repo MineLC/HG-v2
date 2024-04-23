@@ -1,6 +1,9 @@
 package lc.minelc.hg.others.abilities;
 
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -9,9 +12,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import lc.minelc.hg.messages.Messages;
+import net.minecraft.server.v1_8_R3.Item;
+import net.minecraft.server.v1_8_R3.ItemFood;
 
 public final class InteractAbilities {
     
+    private static final ItemFood GOLDEN_APPLE = (ItemFood) Item.REGISTRY.a(322);
+
     public void soup(final PlayerInteractEvent event, final Material type, final int hearts) {
         if (type != Material.MUSHROOM_SOUP || event.getPlayer().getHealth() == 20) {
             return;
@@ -39,15 +46,7 @@ public final class InteractAbilities {
             return;
         }
         final Player player = event.getPlayer();
-        if (event.getItem().getDurability() == 1) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 0));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1));
-        } else {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, 2400, 3));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 400, 1));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 6000, 0));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 6000, 0));
-        }
+        GOLDEN_APPLE.b(CraftItemStack.asNMSCopy(event.getItem()), ((CraftWorld)event.getPlayer().getWorld()).getHandle(), ((CraftPlayer)event.getPlayer()).getHandle());
         deleteOneItem(player.getInventory(), event.getItem());
     }
 
