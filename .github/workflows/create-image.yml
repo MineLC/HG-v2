@@ -34,9 +34,11 @@ jobs:
               rm -rf /var/lib/apt/lists/*
 
           # Clone and build the Spigot server
-          RUN git clone --branch minimal https://github.com/MineLC/LCSpigot.git /tmp/spigot && \\
-              cd /tmp/spigot && \\
-              mvn clean package
+          ENV GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
+          RUN git config --global credential.helper '!f() { echo "username=ToshioDev"; echo "password=$GITHUB_TOKEN"; }; f'
+          RUN git clone --branch minimal https://ToshioDev:${GITHUB_TOKEN}@github.com/MineLC/LCSpigot.git /tmp/spigot && \\
+          cd /tmp/spigot && \\
+          mvn clean package
 
           # Set up the Minecraft server directory
           WORKDIR /minecraft
