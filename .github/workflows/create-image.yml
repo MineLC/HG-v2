@@ -43,6 +43,7 @@ jobs:
           # Clone and build additional plugins
           RUN git clone https://${{ secrets.GH_TOKEN }}@github.com/MineLC/LC-Commons.git /tmp/commons && \
               cd /tmp/commons && \
+              mvn clean install && \
               mvn clean package && \
               cp target/LCCommons-1.0-SNAPSHOT.jar /tmp/spigot/plugins/
 
