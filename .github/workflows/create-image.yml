@@ -32,8 +32,7 @@ jobs:
               rm -rf /var/lib/apt/lists/*
 
           # Clone and build the Spigot server
-          RUN git config --global credential.helper '!f() { echo "username=ToshioDev"; echo "password=${{ secrets.GH_TOKEN }}"; }; f'
-          RUN git clone --branch minimal https://ToshioDev:${GITHUB_TOKEN}@github.com/MineLC/LCSpigot.git /tmp/spigot && \
+          RUN git clone --branch minimal https://${{ secrets.GH_TOKEN }}@github.com/MineLC/LCSpigot.git /tmp/spigot && \
           cd /tmp/spigot && \
           mvn clean package
 
@@ -42,7 +41,7 @@ jobs:
           RUN cp /tmp/spigot/target/lcspigot-*.jar .
 
           # Clone and build additional plugins
-          RUN git clone https://github.com/MineLC/LC-Commons.git /tmp/commons && \
+          RUN git clone https://${{ secrets.GH_TOKEN }}github.com/MineLC/LC-Commons.git /tmp/commons && \
               cd /tmp/commons && \
               mvn clean package && \
               cp target/LCCommons-1.0-SNAPSHOT.jar /tmp/spigot/plugins/
