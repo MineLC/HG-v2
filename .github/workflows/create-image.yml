@@ -12,11 +12,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.GH_TOKEN }}
-
-      - name: Verify GitHub token
-        run: echo "El token ${{ secrets.GH_TOKEN }} no es válido."
 
       - name: Set build number
         id: version
@@ -37,8 +32,7 @@ jobs:
               rm -rf /var/lib/apt/lists/*
 
           # Clone and build the Spigot server
-          ENV GITHUB_TOKEN=${GITHUB_TOKEN}
-          RUN git config --global credential.helper '!f() { echo "username=ToshioDev"; echo "password=$GITHUB_TOKEN"; }; f'
+          RUN git config --global credential.helper '!f() { echo "username=ToshioDev"; echo "password=${{ secrets.GH_TOKEN }}"; }; f'
           RUN git clone --branch minimal https://ToshioDev:${GITHUB_TOKEN}@github.com/MineLC/LCSpigot.git /tmp/spigot && \
           cd /tmp/spigot && \
           mvn clean package
