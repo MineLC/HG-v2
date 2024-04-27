@@ -34,6 +34,7 @@ jobs:
           # Clone and build the Spigot server
           RUN git clone --branch minimal https://${{ secrets.GH_TOKEN }}@github.com/MineLC/LCSpigot.git /tmp/spigot && \
           cd /tmp/spigot && \
+          mvn clean install && \
           mvn clean package
 
           # Set up the Minecraft server directory
@@ -54,9 +55,10 @@ jobs:
 
           RUN git clone https://${{ secrets.GH_TOKEN }}@github.com/MineLC/SlimeWorldManager.git /tmp/slime && \
               cd /tmp/slime && \
+              mvn clean install && \
               mvn clean package && \
-              cp target/slimeworldmanager-plugin-2.2.0-SNAPSHOT-jar-with-dependencies.jar /tmp/spigot/plugins/ && \
-              cp target/slimeworldmanager-classmodifier-2.2.0-SNAPSHOT.jar /tmp/spigot/
+              cp slimeworldmanager-plugin/target/slimeworldmanager-plugin-2.2.0-SNAPSHOT-jar-with-dependencies.jar /tmp/spigot/plugins/ && \
+              cp slimeworldmanager-classmodifier/target/slimeworldmanager-classmodifier-2.2.0-SNAPSHOT.jar /tmp/spigot/
 
           # Set default environment variables for min memory and memory
           ENV MINMEMORY=4608
