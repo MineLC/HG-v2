@@ -48,17 +48,17 @@ jobs:
               mvn clean package && \
               cp target/LCCommons-1.0-SNAPSHOT.jar /tmp/spigot/plugins/
 
-          RUN git clone https://github.com/MineLC/HG-v2.git /tmp/plugin && \
-              cd /tmp/plugin && \
-              mvn clean package && \
-              cp target/hg-0.0.1-jar-with-dependencies.jar /tmp/spigot/plugins/
-
           RUN git clone https://${{ secrets.GH_TOKEN }}@github.com/MineLC/SlimeWorldManager.git /tmp/slime && \
               cd /tmp/slime && \
               mvn clean install && \
               mvn clean package && \
               cp slimeworldmanager-plugin/target/slimeworldmanager-plugin-2.2.0-SNAPSHOT-jar-with-dependencies.jar /tmp/spigot/plugins/ && \
               cp slimeworldmanager-classmodifier/target/slimeworldmanager-classmodifier-2.2.0-SNAPSHOT.jar /tmp/spigot/
+
+          RUN git clone https://github.com/MineLC/HG-v2.git /tmp/plugin && \
+              cd /tmp/plugin && \
+              mvn clean package && \
+              cp target/hg-0.0.1-jar-with-dependencies.jar /tmp/spigot/plugins/
 
           # Set default environment variables for min memory and memory
           ENV MINMEMORY=4608
