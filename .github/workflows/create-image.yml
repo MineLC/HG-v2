@@ -22,44 +22,48 @@ jobs:
       - name: Generate Dockerfile
         run: |
           cat > Dockerfile <<EOF
+          ARG PORT=25565
+          ARG MEMORY=4608
+          ARG MINMEMORY=4608
+
           FROM azul/prime:17
 
-RUN apt-get update && \
-    apt-get install -y git maven && \
-    rm -rf /var/lib/apt/lists/*
+          RUN apt-get update && \\
+              apt-get install -y git maven && \\
+              rm -rf /var/lib/apt/lists/*
 
-RUN git clone --branch minimal https://github.com/MineLC/LCSpigot.git /tmp/spigot && \
-    cd /tmp/spigot && \
-    mvn clean package
+          RUN git clone --branch minimal https://github.com/MineLC/LCSpigot.git /tmp/spigot && \\
+              cd /tmp/spigot && \\
+              mvn clean package
 
-WORKDIR /minecraft
-RUN cp /tmp/spigot/target/lcspigot-*.jar .
+          WORKDIR /minecraft
+          RUN cp /tmp/spigot/target/lcspigot-*.jar .
 
-RUN java -jar lcspigot-*.jar && \
-    sleep 10 && \
-    screen -S spigot -X stuff "stop^M"
+          RUN java -jar lcspigot-*.jar && \\
+              sleep 10 && \\
+              screen -S spigot -X stuff "stop^M"
 
-RUN mv /tmp/spigot .
+          RUN mv /tmp/spigot .
 
-RUN git clone https://github.com/MineLC/LC-Commons.git /tmp/commons && \
-    cd /tmp/commons && \
-    mvn clean package && \
-    cp target/LCCommons-1.0-SNAPSHOT.jar /tmp/spigot/plugins/
+          RUN git clone https://github.com/MineLC/LC-Commons.git /tmp/commons && \\
+              cd /tmp/commons && \\
+              mvn clean package && \\
+              cp target/LCCommons-1.0-SNAPSHOT.jar /tmp/spigot/plugins/
 
-RUN git clone https://github.com/MineLC/HG-v2.git /tmp/plugin && \
-    cd /tmp/plugin && \
-    mvn clean package && \
-    cp target/hg-0.0.1-jar-with-dependencies.jar /tmp/spigot/plugins/
+          RUN git clone https://github.com/MineLC/HG-v2.git /tmp/plugin && \\
+              cd /tmp/plugin && \\
+              mvn clean package && \\
+              cp target/hg-0.0.1-jar-with-dependencies.jar /tmp/spigot/plugins/
 
-RUN git clone https://github.com/MineLC/SlimeWorldManager.git /tmp/slime && \
-    cd /tmp/slime && \
-    mvn clean package && \
-    cp target/slimeworldmanager-plugin-2.2.0-SNAPSHOT-jar-with-dependencies.jar /tmp/spigot/plugins/ && \
-    cp target/slimeworldmanager-classmodifier-2.2.0-SNAPSHOT.jar /tmp/spigot/
+          RUN git clone https://github.com/MineLC/SlimeWorldManager.git /tmp/slime && \\
+              cd /tmp/slime && \\
+              mvn clean package && \\
+              cp target/slimeworldmanager-plugin-2.2.0-SNAPSHOT-jar-with-dependencies.jar /tmp/spigot/plugins/ && \\
+              cp target/slimeworldmanager-classmodifier-2.2.0-SNAPSHOT.jar /tmp/spigot/
 
-EXPOSE $PORT
+          EXPOSE $PORT
 
-CMD ["java", "-Xms${MINMEMORY}M", "-Xmx${MEMORY}M", "-javaagent:slimeworldmanager-classmodifier-2.2.0-SNAPSHOT.jar", "-XX:+UseG1GC", "-XX:+ParallelRefProcEnabled", "-XX:MaxGCPauseMillis=200", "-XX:+UnlockExperimentalVMOptions", "-XX:+DisableExplicitGC", "-XX:+AlwaysPreTouch", "-XX:G1HeapWastePercent=5", "-XX:G1MixedGCCountTarget=4", "-XX:InitiatingHeapOccupancyPercent=15", "-XX:G1MixedGCLiveThresholdPercent=90", "-XX:G1RSetUpdatingPauseTimePercent=5", "-XX:SurvivorRatio=32", "-XX:+PerfDisableSharedMem", "-XX:MaxTenuringThreshold=1", "-Dusing.aikars.flags=https://mcflags.emc.gs", "-Daikars.new.flags=true", "-XX:G1NewSizePercent=30", "-XX:G1MaxNewSizePercent=40", "-XX:G1HeapRegionSize=8M", "-XX:G1ReservePercent=20", "-jar", "lcspigot-*.jar"]
+          CMD ["java", "-Xms${MINMEMORY}M", "-Xmx${MEMORY}M", "-javaagent:slimeworldmanager-classmodifier-2.2.0-SNAPSHOT.jar", "-XX:+UseG1GC", "-XX:+ParallelRefProcEnabled", "-XX:MaxGCPauseMillis=200", "-XX:+UnlockExperimentalVMOptions", "-XX:+DisableExplicitGC", "-XX:+AlwaysPreTouch", "-XX:G1HeapWastePercent=5", "-XX:G1MixedGCCountTarget=4", "-XX:InitiatingHeapOccupancyPercent=15", "-XX:G1MixedGCLiveThresholdPercent=90", "-XX:G1RSetUpdatingPauseTimePercent=5", "-XX:SurvivorRatio=32", "-XX:+PerfDisableSharedMem", "-XX:MaxTenuringThreshold=1", "-Dusing.aikars.flags=https://mcflags.emc.gs", "-Daikars.new.flags=true", "-XX:G1NewSizePercent=30", "-XX:G1MaxNewSizePercent=40", "-XX:G1HeapRegionSize=8M", "-XX:G1ReservePercent=20", "-jar", "lcspigot-*.jar"]
           EOF
 
       - name: Build Docker image
@@ -68,7 +72,7 @@ CMD ["java", "-Xms${MINMEMORY}M", "-Xmx${MEMORY}M", "-javaagent:slimeworldmanage
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/minelc/hgsrv:${{ steps.version.outputs.BUILD_VERSION }}
+          tags: ghcr.io/ToshioDev/hgsrv:${{ steps.version.outputs.BUILD_VERSION }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
