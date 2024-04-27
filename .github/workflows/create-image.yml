@@ -60,10 +60,6 @@ jobs:
           ENV MINMEMORY=4608
           ENV MEMORY=4608
 
-          # Set the default port to 25565 if PORT environment variable is not provided
-          ARG PORT=25565
-          ENV PORT=$PORT
-
           # Set the default port to 25565
           ENV PORT=25565
 
