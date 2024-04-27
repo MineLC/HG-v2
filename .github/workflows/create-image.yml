@@ -21,7 +21,7 @@ jobs:
         run: |
           cat > Dockerfile <<EOF
           # Use a base image
-          FROM azul/prime:17
+          FROM azul/zulu-openjdk:17
 
           # Install necessary packages
           ARG DEBIAN_FRONTEND=noninteractive
