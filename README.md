@@ -1,5 +1,5 @@
 # ArenaHG
-ArenaHG core for MineLC
+ArenaHG core for MineLC -- modded
 
 Made in 1.8 with many features and high performance
 
