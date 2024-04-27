@@ -23,6 +23,7 @@ jobs:
         run: |
           cat > Dockerfile <<EOF
           # Use a base image
+          ENV DEBIAN_FRONTEND=noninteractive
           FROM azul/prime:17
 
           # Install necessary packages
