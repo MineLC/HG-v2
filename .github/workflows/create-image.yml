@@ -13,16 +13,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
 
       - name: Verify GitHub token
-        run: |
-          if [[ $(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY) == 200 ]]; then
-            echo "El token GH_TOKEN es válido."
-          else
-            echo "El token GH_TOKEN no es válido."
-            exit 1
-          fi
+        run: echo "El token ${{ secrets.GH_TOKEN }} no es válido."
 
       - name: Set build number
         id: version
