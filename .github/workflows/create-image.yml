@@ -15,6 +15,15 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Verify GitHub token
+        run: |
+          if [[ $(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY) == 200 ]]; then
+            echo "El token GH_TOKEN es válido."
+          else
+            echo "El token GH_TOKEN no es válido."
+            exit 1
+          fi
+
       - name: Set build number
         id: version
         run: echo "::set-output name=BUILD_VERSION::v0.${{ github.run_number }}"
