@@ -57,7 +57,7 @@
         </dependency>
         <dependency>
             <groupId>obed.me</groupId>
-            <artifactId>lccommons</artifactId>
+            <artifactId>LCCommons</artifactId>
             <version>1.0.0</version>
             <scope>provided</scope>
         </dependency>
