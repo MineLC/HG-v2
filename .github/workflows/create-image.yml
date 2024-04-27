@@ -41,11 +41,12 @@ jobs:
           WORKDIR /minecraft
           RUN cp /tmp/spigot/target/lcspigot-*.jar .
 
-          # Clone and build additional plugins
+          # Clone and build LCCommons
           RUN git clone https://${{ secrets.GH_TOKEN }}@github.com/MineLC/LC-Commons.git /tmp/commons && \
               cd /tmp/commons && \
               mvn clean install && \
               mvn clean package && \
+              mkdir -p /tmp/spigot/plugins/ && \
               cp target/LCCommons-*.jar /tmp/spigot/plugins/
 
           RUN git clone https://${{ secrets.GH_TOKEN }}@github.com/MineLC/SlimeWorldManager.git /tmp/slime && \
