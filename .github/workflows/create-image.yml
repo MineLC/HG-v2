@@ -22,29 +22,24 @@ jobs:
       - name: Generate Dockerfile
         run: |
           cat > Dockerfile <<EOF
-          ARG PORT=25565
-          ARG MEMORY=4608
-          ARG MINMEMORY=4608
-
+          # Use a base image
           FROM azul/prime:17
 
+          # Install necessary packages
           RUN apt-get update && \\
               apt-get install -y git maven && \\
               rm -rf /var/lib/apt/lists/*
 
+          # Clone and build the Spigot server
           RUN git clone --branch minimal https://github.com/MineLC/LCSpigot.git /tmp/spigot && \\
               cd /tmp/spigot && \\
               mvn clean package
 
+          # Set up the Minecraft server directory
           WORKDIR /minecraft
           RUN cp /tmp/spigot/target/lcspigot-*.jar .
 
-          RUN java -jar lcspigot-*.jar && \\
-              sleep 10 && \\
-              screen -S spigot -X stuff "stop^M"
-
-          RUN mv /tmp/spigot .
-
+          # Clone and build additional plugins
           RUN git clone https://github.com/MineLC/LC-Commons.git /tmp/commons && \\
               cd /tmp/commons && \\
               mvn clean package && \\
@@ -61,9 +56,19 @@ jobs:
               cp target/slimeworldmanager-plugin-2.2.0-SNAPSHOT-jar-with-dependencies.jar /tmp/spigot/plugins/ && \\
               cp target/slimeworldmanager-classmodifier-2.2.0-SNAPSHOT.jar /tmp/spigot/
 
+          # Set default environment variables for min memory and memory
+          ENV MINMEMORY=4608
+          ENV MEMORY=4608
+
+          # Set the default port to 25565 if PORT environment variable is not provided
+          ARG PORT=25565
+          ENV PORT=$PORT
+
+          # Expose the default port
           EXPOSE $PORT
 
-          CMD ["java", "-Xms${MINMEMORY}M", "-Xmx${MEMORY}M", "-javaagent:slimeworldmanager-classmodifier-2.2.0-SNAPSHOT.jar", "-XX:+UseG1GC", "-XX:+ParallelRefProcEnabled", "-XX:MaxGCPauseMillis=200", "-XX:+UnlockExperimentalVMOptions", "-XX:+DisableExplicitGC", "-XX:+AlwaysPreTouch", "-XX:G1HeapWastePercent=5", "-XX:G1MixedGCCountTarget=4", "-XX:InitiatingHeapOccupancyPercent=15", "-XX:G1MixedGCLiveThresholdPercent=90", "-XX:G1RSetUpdatingPauseTimePercent=5", "-XX:SurvivorRatio=32", "-XX:+PerfDisableSharedMem", "-XX:MaxTenuringThreshold=1", "-Dusing.aikars.flags=https://mcflags.emc.gs", "-Daikars.new.flags=true", "-XX:G1NewSizePercent=30", "-XX:G1MaxNewSizePercent=40", "-XX:G1HeapRegionSize=8M", "-XX:G1ReservePercent=20", "-jar", "lcspigot-*.jar"]
+          # Set the command to run the server with the specified memory options
+          CMD ["java", "-Xms\${MINMEMORY}M", "-Xmx\${MEMORY}M", "-javaagent:slimeworldmanager-classmodifier-2.2.0-SNAPSHOT.jar", "-XX:+UseG1GC", "-XX:+ParallelRefProcEnabled", "-XX:MaxGCPauseMillis=200", "-XX:+UnlockExperimentalVMOptions", "-XX:+DisableExplicitGC", "-XX:+AlwaysPreTouch", "-XX:G1HeapWastePercent=5", "-XX:G1MixedGCCountTarget=4", "-XX:InitiatingHeapOccupancyPercent=15", "-XX:G1MixedGCLiveThresholdPercent=90", "-XX:G1RSetUpdatingPauseTimePercent=5", "-XX:SurvivorRatio=32", "-XX:+PerfDisableSharedMem", "-XX:MaxTenuringThreshold=1", "-Dusing.aikars.flags=https://mcflags.emc.gs", "-Daikars.new.flags=true", "-XX:G1NewSizePercent=30", "-XX:G1MaxNewSizePercent=40", "-XX:G1HeapRegionSize=8M", "-XX:G1ReservePercent=20", "-jar", "lcspigot-*.jar"]
           EOF
 
       - name: Build Docker image
