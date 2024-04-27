@@ -69,7 +69,7 @@ jobs:
 
       - name: Set image tag
         id: tag
-        run: echo "::set-output name=TAG::$(echo $GITHUB_REF | cut -d '/' -f 3 | tr '[:upper:]' '[:lower:]')"
+        run: echo "::set-output name=TAG::$(echo $GITHUB_REF | cut -d '/' -f 3 | awk '{print tolower($0)}')"
 
       - name: Build Docker image
         uses: docker/build-push-action@v2
