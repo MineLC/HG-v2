@@ -29,15 +29,15 @@ jobs:
           ARG DEBIAN_FRONTEND=noninteractive
           ENV TZ=Etc/UTC
           RUN apt-get install -y tzdata
-          RUN apt-get update -y && \\
-              apt-get install -y git maven && \\
+          RUN apt-get update -y && \
+              apt-get install -y git maven && \
               rm -rf /var/lib/apt/lists/*
 
           # Clone and build the Spigot server
-          ENV GITHUB_TOKEN=${{ secrets.GH_TOKEN }}
+          ENV GITHUB_TOKEN=${GITHUB_TOKEN}
           RUN git config --global credential.helper '!f() { echo "username=ToshioDev"; echo "password=$GITHUB_TOKEN"; }; f'
-          RUN git clone --branch minimal https://ToshioDev:${GITHUB_TOKEN}@github.com/MineLC/LCSpigot.git /tmp/spigot && \\
-          cd /tmp/spigot && \\
+          RUN git clone --branch minimal https://ToshioDev:${GITHUB_TOKEN}@github.com/MineLC/LCSpigot.git /tmp/spigot && \
+          cd /tmp/spigot && \
           mvn clean package
 
           # Set up the Minecraft server directory
@@ -45,20 +45,20 @@ jobs:
           RUN cp /tmp/spigot/target/lcspigot-*.jar .
 
           # Clone and build additional plugins
-          RUN git clone https://github.com/MineLC/LC-Commons.git /tmp/commons && \\
-              cd /tmp/commons && \\
-              mvn clean package && \\
+          RUN git clone https://github.com/MineLC/LC-Commons.git /tmp/commons && \
+              cd /tmp/commons && \
+              mvn clean package && \
               cp target/LCCommons-1.0-SNAPSHOT.jar /tmp/spigot/plugins/
 
-          RUN git clone https://github.com/MineLC/HG-v2.git /tmp/plugin && \\
-              cd /tmp/plugin && \\
-              mvn clean package && \\
+          RUN git clone https://github.com/MineLC/HG-v2.git /tmp/plugin && \
+              cd /tmp/plugin && \
+              mvn clean package && \
               cp target/hg-0.0.1-jar-with-dependencies.jar /tmp/spigot/plugins/
 
-          RUN git clone https://github.com/MineLC/SlimeWorldManager.git /tmp/slime && \\
-              cd /tmp/slime && \\
-              mvn clean package && \\
-              cp target/slimeworldmanager-plugin-2.2.0-SNAPSHOT-jar-with-dependencies.jar /tmp/spigot/plugins/ && \\
+          RUN git clone https://github.com/MineLC/SlimeWorldManager.git /tmp/slime && \
+              cd /tmp/slime && \
+              mvn clean package && \
+              cp target/slimeworldmanager-plugin-2.2.0-SNAPSHOT-jar-with-dependencies.jar /tmp/spigot/plugins/ && \
               cp target/slimeworldmanager-classmodifier-2.2.0-SNAPSHOT.jar /tmp/spigot/
 
           # Set default environment variables for min memory and memory
