@@ -23,10 +23,12 @@ jobs:
         run: |
           cat > Dockerfile <<EOF
           # Use a base image
-          ENV DEBIAN_FRONTEND=noninteractive
           FROM azul/prime:17
 
           # Install necessary packages
+          ARG DEBIAN_FRONTEND=noninteractive
+          ENV TZ=Etc/UTC
+          RUN apt-get install -y tzdata
           RUN apt-get update -y && \\
               apt-get install -y git maven && \\
               rm -rf /var/lib/apt/lists/*
