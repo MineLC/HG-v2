@@ -1,6 +1,5 @@
 package lc.minelc.hg.listeners;
 
-import lc.minelc.hg.game.pregame.PregameStorage;
 import lc.minelc.hg.others.abilities.GameAbility;
 import lc.minelc.hg.others.abilities.InteractAbilities;
 
@@ -14,7 +13,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import lc.minelc.hg.others.kits.KitStorage;
 import lc.minelc.hg.game.GameState;
 import lc.minelc.hg.game.GameStorage;
 import lc.minelc.hg.game.PlayerInGame;
@@ -68,7 +66,7 @@ public final class PlayerInteractListener implements EventListener {
                 return;
             }
             if (playerInGame.getGame().getState() == GameState.PREGAME) {
-                handleWithPregameItems(event.getPlayer(), event.getMaterial());
+                handleWithSpawnItems(event.getPlayer(), event.getMaterial());
                 return;
             }
             if (playerInGame.getGame().getState() == GameState.END_GAME) {
@@ -84,11 +82,6 @@ public final class PlayerInteractListener implements EventListener {
         }
         if (type == SpawnStorage.getStorage().getGameItemMaterial()) {
             player.openInventory(mapInventoryBuilder.build());
-        }
-    }
-    private void handleWithPregameItems(final Player player, final Material type) {
-        if (type == PregameStorage.getStorage().kitSelectedMaterial()) {
-            player.openInventory(KitStorage.getStorage().inventory().getInventory());;
         }
     }
 
