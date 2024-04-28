@@ -89,7 +89,7 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t hgsrv .
-      - name: Push Docker image to GitHub Container Registry
+      - name: Push Docker image to GHCR
         run: |
           echo "${{ secrets.GH_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
           docker tag hgsrv ghcr.io/minelc/hgsrv:${{ steps.version.outputs.BUILD_VERSION }}
