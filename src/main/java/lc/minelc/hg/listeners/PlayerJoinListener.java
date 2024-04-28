@@ -56,8 +56,9 @@ public final class PlayerJoinListener implements EventListener {
             SidebarStorage.getStorage().getSidebar(SidebarType.SPAWN).send(player);            
 
             player.setCustomNameVisible(true);
-            player.setCustomName(playerData.getRankInfo().getRank().getPrefix() + " " + player.getName());
-
+            final String name = playerData.getRankInfo().getRank().getPrefix() + " " + player.getName();
+            player.setCustomName(name);
+            player.setDisplayName(name);
             final PlayerData pp = UserProvider.getInstance().getUserCache(player.getName());
             final String playerInfo = pp.getRankInfo().getRank().getPrefix() + " &7" + pp.getRankInfo().getUserColor() + player.getName();
             Messages.sendNoGet(SpawnStorage.getStorage().getPlayers(), playerInfo + joinMessage);

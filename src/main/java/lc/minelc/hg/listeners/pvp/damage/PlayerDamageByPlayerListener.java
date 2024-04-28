@@ -51,7 +51,9 @@ public final class PlayerDamageByPlayerListener implements EventListener {
     }
     private void handleAbilitiesInteract(final EntityDamageByEntityEvent event, final PlayerInGame playerInGame) {
         final GameAbility[] abilities = playerInGame.getGameAbilities();
-
+        if (abilities == null) {
+            return;
+        }
         for (final GameAbility ability : abilities) {
             switch (ability) {
                 case CANIBAL:

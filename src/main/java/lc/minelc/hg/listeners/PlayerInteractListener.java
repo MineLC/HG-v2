@@ -94,7 +94,9 @@ public final class PlayerInteractListener implements EventListener {
 
     private void handleAbilitiesInteract(final PlayerInteractEvent event, final PlayerInGame playerInGame, final Material material) {
         final GameAbility[] abilities = playerInGame.getGameAbilities();
-
+        if (abilities == null) {
+            return;
+        }
         for (GameAbility ability : abilities) {
             switch (ability) {
                 case HEARTS_SOUPS_2:

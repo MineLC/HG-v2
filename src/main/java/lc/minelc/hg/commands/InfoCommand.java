@@ -35,7 +35,7 @@ public final class InfoCommand implements Command {
         final Kit kit = KitStorage.getStorage().kitsPerId().get(data.kitSelected);
         final String kitName = (data.kitSelected == 0 || kit == null) ? "Ninguno" : kit.name();
         
-        send(sender, Messages.get("commands.information")
+        send(sender, Messages.get("commands.info")
             .replace("%name%", player.getName())
             .replace("%kills%", String.valueOf(data.kills))
             .replace("%deaths%", String.valueOf(data.deaths))

@@ -40,7 +40,9 @@ public class ProjectilHitListener implements EventListener {
             return;
         }
         GameAbility[] abilities = playerInGame.getGameAbilities();
-    
+        if (abilities == null) {
+            return;
+        }
         for (GameAbility ability : abilities) {
             switch (ability) {
                 case EXPLODING_ARROWS:
