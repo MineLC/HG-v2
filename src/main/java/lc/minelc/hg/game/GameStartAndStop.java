@@ -18,6 +18,7 @@ import lc.minelc.hg.messages.Messages;
 import lc.minelc.hg.others.abilities.GameAbility;
 import lc.minelc.hg.others.events.EventStorage;
 import lc.minelc.hg.others.events.GameEvent;
+import lc.minelc.hg.others.kits.Kit;
 import lc.minelc.hg.others.kits.KitStorage;
 import lc.minelc.hg.others.sidebar.SidebarStorage;
 import lc.minelc.hg.others.sidebar.SidebarType;
@@ -76,11 +77,13 @@ final class GameStartAndStop {
 
         for (final Player player : players) {
             int kitSelected = PlayerDataStorage.getStorage().get(player.getUniqueId()).kitSelected;
-            GameAbility[] gameAbilities = KitStorage.getStorage().kitsPerId().get(kitSelected).gameAbilities();
-            GameStorage.getStorage().getPlayerInGame(player.getUniqueId()).setGameAbilities(gameAbilities);
-
-            KitStorage.getStorage().setKit(player, true);
-
+            final Kit kit = KitStorage.getStorage().kitsPerId().get(kitSelected);
+            if (kit != null) {
+                GameAbility[] gameAbilities = kit.gameAbilities();
+                GameStorage.getStorage().getPlayerInGame(player.getUniqueId()).setGameAbilities(gameAbilities);
+    
+                KitStorage.getStorage().setKit(player, true);   
+            }
             player.setGameMode(GameMode.SURVIVAL);
             final EntityLocation spawn = spawns[0];
             player.teleport(new Location(game.getWorld(), spawn.x(), spawn.y(), spawn.z(), spawn.yaw(), spawn.pitch()));

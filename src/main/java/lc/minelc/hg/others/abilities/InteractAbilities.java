@@ -26,9 +26,10 @@ public final class InteractAbilities {
         final double newHealth = event.getPlayer().getHealth() + (hearts << 1);
         if (newHealth >= 20) {
             event.getPlayer().setHealth(20);
-            return;
+        } else {
+            event.getPlayer().setHealth(newHealth);
         }
-        event.getPlayer().setHealth(newHealth);
+        event.getPlayer().setFoodLevel(20);
         deleteOneItem(event.getPlayer().getInventory(), event.getItem());
     }
 

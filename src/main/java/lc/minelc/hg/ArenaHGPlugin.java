@@ -11,7 +11,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerPreLoginEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.tinylog.Logger;
@@ -55,6 +58,7 @@ import lc.minelc.hg.others.spawn.StartSpawn;
 public final class ArenaHGPlugin extends JavaPlugin {
 
     private static final MongoDBHandler MONGODB = new MongoDBHandler();
+    private boolean finallyLoaded = false;
 
     @Override
     public void onEnable() {
@@ -96,14 +100,19 @@ public final class ArenaHGPlugin extends JavaPlugin {
                 try {
                     new StartSpawn(this).loadSpawn();
                     new StartPreGameData().loadMap(this);
-                    GameManagerThread.startThread();  
+                    GameManagerThread.startThread(); 
+                    finallyLoaded = true; 
                 } catch (Exception e) {
                     Logger.error(e);
                 }    
-            }, 20);   
+            }, 40);   
         } catch (Exception e) {
             Logger.error(e);
         }
+    }
+
+    public boolean getLoaded() {
+        return finallyLoaded;
     }
 
     private void registerBasicListeners(final MapInventoryBuilder builder) {
@@ -115,7 +124,15 @@ public final class ArenaHGPlugin extends JavaPlugin {
         listeners.register(new PlayerDamageByPlayerListener(), true);
         listeners.register(new PlayerInventoryClickListener(), true);
         listeners.register(new PlayerInteractListener(builder), true);
-
+        listeners.fastListener(AsyncPlayerPreLoginEvent.class, (d) -> {
+            final AsyncPlayerPreLoginEvent event = (AsyncPlayerPreLoginEvent)d;
+            if (!finallyLoaded) {
+                event.setKickMessage("Espera a que el server este cargado");
+                event.setLoginResult(Result.KICK_OTHER);
+                return;
+            }
+        }
+        );
         listeners.register(new PlayerJoinListener(Messages.color(getConfig().getString("join"))), true);
         listeners.register(new PlayerQuitListener(), true);  
         listeners.register(new PlayerDropitemListener(), true);  
