@@ -91,8 +91,8 @@ jobs:
       - name: Push Docker image to GitHub Container Registry
         run: |
           echo "${{ secrets.GH_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
-          docker tag hgsrv ghcr.io/${{ github.repository_owner }}/hgsrv:${{ steps.version.outputs.BUILD_VERSION }}
-          docker tag hgsrv ghcr.io/${{ github.repository_owner }}/hgsrv:latest
+          docker tag my-image ghcr.io/${{ github.repository_owner }}/hgsrv:${{ steps.version.outputs.BUILD_VERSION }}
+          docker tag my-image ghcr.io/${{ github.repository_owner }}/hgsrv:latest
           docker push ghcr.io/${{ github.repository_owner }}/hgsrv:${{ steps.version.outputs.BUILD_VERSION }}
           docker push ghcr.io/${{ github.repository_owner }}/hgsrv:latest
         env:
