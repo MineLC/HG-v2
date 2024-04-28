@@ -8,7 +8,8 @@ on:
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
-
+    permissions:
+      packages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -87,4 +88,13 @@ jobs:
           EOL
 
       - name: Build Docker image
-        run: docker build -t my-image .
+        run: docker build -t hgsrv .
+      - name: Push Docker image to GHCR
+        run: |
+          echo "${{ secrets.GH_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+          docker tag hgsrv ghcr.io/minelc/hgsrv:${{ steps.version.outputs.BUILD_VERSION }}
+          docker tag hgsrv ghcr.io/minelc/hgsrv:latest
+          docker push ghcr.io/minelc/hgsrv:${{ steps.version.outputs.BUILD_VERSION }}
+          docker push ghcr.io/minelc/hgsrv:latest
+        env:
+          BUILD_VERSION: ${{ steps.version.outputs.BUILD_VERSION }}
