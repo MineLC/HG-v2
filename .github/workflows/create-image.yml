@@ -88,3 +88,10 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t my-image .
+      - name: Push Docker image to GitHub Container Registry
+        run: |
+          echo "${{ secrets.GH_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+          docker tag my-image ghcr.io/${{ github.repository_owner }}/nombre-de-la-imagen:v0.${{ steps.version.outputs.BUILD_VERSION }}
+          docker push ghcr.io/${{ github.repository_owner }}/hgsrv:v0.${{ steps.version.outputs.BUILD_VERSION }}
+        env:
+          BUILD_VERSION: ${{ steps.version.outputs.BUILD_VERSION }}
