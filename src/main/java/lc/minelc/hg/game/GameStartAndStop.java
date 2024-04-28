@@ -39,7 +39,7 @@ final class GameStartAndStop {
                     world.getWorldBorder().setCenter(world.getSpawnLocation());
                     world.getWorldBorder().setSize(game.getMapData().getBorderSize());
                     startForPlayers(game);
-           
+
                 } catch (Exception e) {
                     Logger.error(e);
                 }

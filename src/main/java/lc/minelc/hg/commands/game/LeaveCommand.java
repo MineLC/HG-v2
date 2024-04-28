@@ -28,6 +28,8 @@ public final class LeaveCommand implements Command {
         SpawnStorage.getStorage().sendToSpawn(player);
         SidebarStorage.getStorage().getSidebar(SidebarType.SPAWN).send(player);
 
+        TabStorage.getStorage().removeOnePlayer(player, game.getPlayers());
+
         TabStorage.getStorage().removePlayers(player, game.getPlayers());
         TabStorage.getStorage().sendPlayerInfo(player, SpawnStorage.getStorage().getPlayers());
 

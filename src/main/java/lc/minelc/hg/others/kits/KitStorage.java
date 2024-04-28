@@ -9,7 +9,7 @@ import lc.minelc.hg.database.mongodb.PlayerDataStorage;
 import lc.minelc.hg.inventory.types.KitInventory;
 import net.minecraft.server.v1_8_R3.PlayerInventory;
 
-public final record KitStorage(KitInventory inventory, IntObjectHashMap<Kit> kitsPerId) {
+public final record KitStorage(KitInventory inventory, IntObjectHashMap<Kit> kitsPerId, Kit defaultKit) {
 
     private static KitStorage storage;
 

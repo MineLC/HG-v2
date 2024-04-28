@@ -14,6 +14,7 @@ import com.mongodb.client.model.Updates;
 
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.set.hash.TIntHashSet;
+import lc.minelc.hg.others.levels.LevelStorage;
 
 public final class MongoDBManager {
 
@@ -40,9 +41,9 @@ public final class MongoDBManager {
         data.kills = document.getInteger("kills", 0);
         data.deaths = document.getInteger("deaths", 0);
         data.wins = document.getInteger("wins", 0);
-        data.level = document.getInteger("level", 0);
         data.kitSelected = document.getInteger("kit", 0);
         data.kits = createHashSet(document.getList(data, Integer.class), null);
+        data.level = LevelStorage.getStorage().getLevels(data);
 
         return data;
     }
@@ -65,7 +66,6 @@ public final class MongoDBManager {
             Updates.set("deaths", data.deaths),
             Updates.set("wins", data.wins),
             Updates.set("kit", data.kitSelected),
-            Updates.set("level", data.level),
             Updates.set("kits", kits)
         );
     }

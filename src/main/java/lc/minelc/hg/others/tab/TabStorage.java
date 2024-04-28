@@ -37,6 +37,14 @@ public final class TabStorage {
         player.playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, entityPlayers));
     }
 
+    public void removeOnePlayer(final Player playerToRemove, final Collection<Player> players) {
+        final PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, ((CraftPlayer)playerToRemove).getHandle());
+
+        for (final Player otherPlayer : players) {
+           ((CraftPlayer)otherPlayer).getHandle().playerConnection.sendPacket(packet);
+        } 
+    }
+
     public void sendPlayerInfo(final Player bukkitPlayer, final Collection<Player> players) {
         final PlayerData pp = UserProvider.getInstance().getUserCache(bukkitPlayer.getName());
         final String playerInfo = Messages.color(pp.getRankInfo().getRank().getPrefix() + " &7" + pp.getRankInfo().getUserColor() + bukkitPlayer.getName());

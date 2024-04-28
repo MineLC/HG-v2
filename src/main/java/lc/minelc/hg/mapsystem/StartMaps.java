@@ -13,9 +13,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
-
+import com.grinderwolf.swm.api.SlimePlugin;
 import com.grinderwolf.swm.api.loaders.SlimeLoader;
-import com.grinderwolf.swm.plugin.SWMPlugin;
 
 import lc.minelc.hg.ArenaHGPlugin;
 import lc.minelc.hg.game.GameManagerThread;
@@ -26,9 +25,9 @@ public final class StartMaps {
 
     private final ArenaHGPlugin plugin;
     private final SlimeLoader loader;
-    private final SWMPlugin slimePlugin;
+    private final SlimePlugin slimePlugin;
 
-    public StartMaps(ArenaHGPlugin plugin, SWMPlugin slimePlugin) {
+    public StartMaps(ArenaHGPlugin plugin, SlimePlugin slimePlugin) {
         this.plugin = plugin;
         this.slimePlugin = slimePlugin;
         this.loader = slimePlugin.getLoader(plugin.getConfig().getString("slime-loader"));

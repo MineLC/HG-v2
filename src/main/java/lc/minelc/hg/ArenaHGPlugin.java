@@ -16,7 +16,7 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.tinylog.Logger;
 
-import com.grinderwolf.swm.plugin.SWMPlugin;
+import com.grinderwolf.swm.api.SlimePlugin;
 
 import lc.lcspigot.commands.CommandStorage;
 import lc.lcspigot.listeners.ListenerRegister;
@@ -60,7 +60,7 @@ public final class ArenaHGPlugin extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
 
-        final SWMPlugin slimePlugin = (SWMPlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
+        final SlimePlugin slimePlugin = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
         if (slimePlugin == null) {
             Logger.info("ArenaHG need slimeworld manager to work");
             return;
@@ -73,32 +73,37 @@ public final class ArenaHGPlugin extends JavaPlugin {
             }
         });
 
-        new StartMessages().load(this);
-        new StartGameData().load(this);
-        new StartKits(this).load();
-        new StartDeaths(this).load(this);
-        new StartSpawn(this).loadItems();
-        new StartLevels(this).load();
-        new StartPreGameData().loadItems(this);
-        new StartSidebar(this).load();
-        new StartEvents(this).load();
-        new StartMaps(this, slimePlugin).load();
-        new StartTab().load(this);
+        try {
+  
+            new StartMessages().load(this);
+            new StartGameData().load(this);
+            new StartKits(this).load();
+            new StartDeaths(this).load(this);
+            new StartSpawn(this).loadItems();
+            new StartLevels(this).load();
+            new StartPreGameData().loadItems(this);
+            new StartSidebar(this).load();
+            new StartEvents(this).load();
+            new StartMaps(this, slimePlugin).load();
+            new StartTab().load(this);
 
-        final MapInventoryBuilder mapInventoryBuilder = new StartMapInventories().load(this);
+            final MapInventoryBuilder mapInventoryBuilder = new StartMapInventories().load(this);
 
-        loadCommands();
-        registerBasicListeners(mapInventoryBuilder);
+            loadCommands();
+            registerBasicListeners(mapInventoryBuilder);
 
-        getServer().getScheduler().runTaskLater(this, () -> {
-            try {
-                new StartSpawn(this).loadSpawn();
-                new StartPreGameData().loadMap(this);
-                GameManagerThread.startThread();  
-            } catch (Exception e) {
-                Logger.error(e);
-            }    
-        }, 20);
+            getServer().getScheduler().runTaskLater(this, () -> {
+                try {
+                    new StartSpawn(this).loadSpawn();
+                    new StartPreGameData().loadMap(this);
+                    GameManagerThread.startThread();  
+                } catch (Exception e) {
+                    Logger.error(e);
+                }    
+            }, 20);   
+        } catch (Exception e) {
+            Logger.error(e);
+        }
     }
 
     private void registerBasicListeners(final MapInventoryBuilder builder) {

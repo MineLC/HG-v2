@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import com.grinderwolf.swm.api.SlimePlugin;
 import com.grinderwolf.swm.api.exceptions.CorruptedWorldException;
 import com.grinderwolf.swm.api.exceptions.NewerFormatException;
 import com.grinderwolf.swm.api.exceptions.UnknownWorldException;
@@ -12,7 +13,6 @@ import com.grinderwolf.swm.api.loaders.SlimeLoader;
 import com.grinderwolf.swm.api.world.SlimeWorld;
 import com.grinderwolf.swm.api.world.properties.SlimeProperties;
 import com.grinderwolf.swm.api.world.properties.SlimePropertyMap;
-import com.grinderwolf.swm.plugin.SWMPlugin;
 
 public final class MapStorage {
     private static MapStorage mapStorage;
@@ -30,10 +30,10 @@ public final class MapStorage {
     private final Map<String, MapData> mapsPerName;
     private final MapData[] maps;
 
-    private final SWMPlugin slimePlugin;
+    private final SlimePlugin slimePlugin;
     private final SlimeLoader loader;
 
-    MapStorage(SWMPlugin slimePlugin, SlimeLoader loader, Map<String, MapData> mapsPerName, MapData[] maps) {
+    MapStorage(SlimePlugin slimePlugin, SlimeLoader loader, Map<String, MapData> mapsPerName, MapData[] maps) {
         this.slimePlugin = slimePlugin;
         this.loader = loader;
         this.mapsPerName = mapsPerName;

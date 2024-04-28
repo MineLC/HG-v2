@@ -2,6 +2,7 @@ package lc.minelc.hg.others.sidebar.types;
 
 import java.util.Collection;
 
+import lc.minelc.hg.others.kits.Kit;
 import lc.minelc.hg.others.kits.KitStorage;
 import org.bukkit.entity.Player;
 
@@ -33,7 +34,9 @@ public final class PregameSidebar implements HgSidebar {
 
         final HGPlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
 
-        final String selectedKit = KitStorage.getStorage().kitsPerId().get(data.kitSelected).name();
+        final Kit selectedKit = KitStorage.getStorage().kitsPerId().get(data.kitSelected);
+        final String selectedKitName = (selectedKit == null) ? "Sin Kit" : selectedKit.name();
+    
         final String lcoins = String.valueOf(data.coins);
         final String players = String.valueOf(game.getPlayers().size());
         final String maxPlayers = String.valueOf(game.getMapData().getMaxPlayers());
@@ -41,7 +44,7 @@ public final class PregameSidebar implements HgSidebar {
 
         for (int i = 0; i < lines.length; i++) {
             parsedLines[i] = lines[i].isEmpty() ? "" : lines[i]
-                    .replace("%selectedkit%",selectedKit)
+                    .replace("%selectedkit%", selectedKitName)
                     .replace("%coin%", lcoins)
                     .replace("%players%", players)
                     .replace("%max%",maxPlayers)

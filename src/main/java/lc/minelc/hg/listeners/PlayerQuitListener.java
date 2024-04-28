@@ -14,7 +14,8 @@ import lc.minelc.hg.database.mongodb.HGPlayerData;
 import lc.minelc.hg.database.mongodb.PlayerDataStorage;
 import lc.minelc.hg.game.GameInProgress;
 import lc.minelc.hg.game.GameStorage;
-
+import lc.minelc.hg.others.spawn.SpawnStorage;
+import lc.minelc.hg.others.tab.TabStorage;
 import lc.lcspigot.listeners.EventListener;
 import lc.lcspigot.listeners.ListenerData;
 
@@ -32,7 +33,11 @@ public final class PlayerQuitListener implements EventListener {
         
         if (game != null) {
             GameStorage.getStorage().leave(game, player);
+            TabStorage.getStorage().removeOnePlayer(player, game.getPlayers());
+        } else if (SpawnStorage.getStorage().isInSpawn(player)) {
+            TabStorage.getStorage().removeOnePlayer(player, SpawnStorage.getStorage().getPlayers());
         }
+
         CompletableFuture.runAsync(() -> {
             final HGPlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
             PlayerData playerData = UserProvider.getInstance().getUserByName(player.getName());

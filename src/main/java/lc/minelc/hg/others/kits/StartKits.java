@@ -36,6 +36,7 @@ public final class StartKits {
         final File kitsFolder = new File(plugin.getDataFolder(), "kits");
         try {
             tryCreateDefaultKits(kitsFolder);
+            String defaultKit = plugin.getConfig().getString("default-kit");
 
             final FileConfiguration kitsInventory = plugin.loadConfig("inventories/kits");
 
@@ -53,14 +54,19 @@ public final class StartKits {
                     inventory.setItem(kit.inventoryItem().slot(), kit.inventoryItem().item());
                     kits.put(kit.inventoryItem().slot(), kit);
                 } catch (Exception e) {
-                    // Imprimir la excepción en la consola
                     System.out.println("Error al cargar un kit: " + e.getMessage());
                 }
             }
-            KitStorage.update(new KitStorage(new KitInventory(kits, inventory), kitsPerId));
+            Kit kitPerDefault = (defaultKit != null) ? kitsPerId.get(defaultKit.hashCode()) : null;
+            if (kitPerDefault == null && !kitsPerId.isEmpty()) {
+                kitPerDefault = kitsPerId.values().iterator().next();
+            }
+        
+            KitStorage.update(new KitStorage(new KitInventory(kits, inventory), kitsPerId, kitPerDefault));
         } catch (Exception e) {
             // Imprimir la excepción en la consola
-            System.out.println("Error al cargar los kits: " + e.getMessage());
+            Logger.error("Error al cargar los kits");
+            Logger.error(e);
         }
     }
 
