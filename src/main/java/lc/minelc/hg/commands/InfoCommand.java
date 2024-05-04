@@ -9,6 +9,7 @@ import lc.minelc.hg.database.mongodb.PlayerDataStorage;
 import lc.minelc.hg.messages.Messages;
 import lc.minelc.hg.others.kits.Kit;
 import lc.minelc.hg.others.kits.KitStorage;
+import net.minecraft.server.v1_8_R3.MinecraftServer;
 import lc.lcspigot.commands.Command;
 
 public final class InfoCommand implements Command {
@@ -30,12 +31,11 @@ public final class InfoCommand implements Command {
                 player = (Player)sender;
             }
         }
-
         final HGPlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
         final Kit kit = KitStorage.getStorage().kitsPerId().get(data.kitSelected);
-        final String kitName = (data.kitSelected == 0 || kit == null) ? "Ninguno" : kit.name();
-        
-        send(sender, Messages.get("commands.info")
+        final String kitName = (data.kitSelected == 0 || kit == null) ? "Sin Kit" : kit.name();
+
+        final String message = Messages.get("commands.info")
             .replace("%name%", player.getName())
             .replace("%kills%", String.valueOf(data.kills))
             .replace("%deaths%", String.valueOf(data.deaths))
@@ -43,7 +43,13 @@ public final class InfoCommand implements Command {
             .replace("%kit%", kitName)
             .replace("%kdr%", (data.deaths == 0) ? String.valueOf(data.kills) : String.valueOf((float)(data.kills / data.deaths)))
             .replace("%coins%", String.valueOf(data.coins))
-            .replace("%wins%", String.valueOf(data.wins))
-        );
+            .replace("%wins%", String.valueOf(data.wins));
+
+        send(sender, message);
+    }
+
+    @Override
+    public String[] tab(CommandSender sender, String[] args) {
+        return (args.length == 0) ? MinecraftServer.getServer().getPlayers() : none();
     }
 }

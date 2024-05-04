@@ -1,5 +1,6 @@
 name: "adan"
 
+permission: "minelc.vip"
 inventory-item:
   slot: 3
   item: "260"

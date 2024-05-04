@@ -12,8 +12,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 
-import gnu.trove.iterator.TIntIterator;
-import gnu.trove.set.hash.TIntHashSet;
+import lc.minelc.hg.others.kits.KitStorage;
 import lc.minelc.hg.others.levels.LevelStorage;
 
 public final class MongoDBManager {
@@ -31,18 +30,16 @@ public final class MongoDBManager {
         query.put("_id", uuid);
         final FindIterable<Document> results = profiles.find(query);
         final Document document = results.first();
+        final HGPlayerData data =  new HGPlayerData();
 
         if (document == null) {
-            return HGPlayerData.createEmptyData();
+            return data;
         }
-
-        final HGPlayerData data = new HGPlayerData();
 
         data.kills = document.getInteger("kills", 0);
         data.deaths = document.getInteger("deaths", 0);
         data.wins = document.getInteger("wins", 0);
         data.kitSelected = document.getInteger("kit", 0);
-        data.kits = createHashSet(document.getList(data, Integer.class), null);
         data.level = LevelStorage.getStorage().getLevels(data);
 
         return data;
@@ -52,49 +49,28 @@ public final class MongoDBManager {
         final Document query = new Document();
         query.put("_id", uuid);
 
-        final List<Integer> kits = toIntegerArray(data.kits);
 
         final UpdateOptions options = new UpdateOptions().upsert(true);
-        final Bson update = createUpdateQuery(data, kits);
+        final Bson update = Updates.combine(getInfo(data));
 
         profiles.updateOne(query, update, options);
     }
 
-    private Bson createUpdateQuery(final HGPlayerData data, final List<Integer> kits) {
-        return Updates.combine(
-            Updates.set("kills", data.kills),
-            Updates.set("deaths", data.deaths),
-            Updates.set("wins", data.wins),
-            Updates.set("kit", data.kitSelected),
-            Updates.set("kits", kits)
-        );
-    }
-
-    private TIntHashSet createHashSet(final List<Integer> data, final Integer defaultValue) {
-        if (data == null) {
-            final TIntHashSet set = new TIntHashSet();
-            if (defaultValue != null) {
-                set.add(defaultValue);
-            }
-            return set;
+    private Bson[] getInfo(final HGPlayerData data) {
+        final List<Bson> info = new ArrayList<>();
+        if (data.kills != 0) {
+            info.add(Updates.set("kills", data.kills));
         }
-        final TIntHashSet values = new TIntHashSet(data.size());
-        for (final Integer value : data) {
-            if (value != null && value != -1) {
-                values.add(value);
-            }
+        if (data.deaths != 0) {
+            info.add(Updates.set("deaths", data.deaths));
         }
-        return values;
-    }
-
-    private List<Integer> toIntegerArray(final TIntHashSet set) {
-        final int size = set.size();
-        final List<Integer> list = new ArrayList<>(size);
-        final TIntIterator iterator = set.iterator();
-        for (int i = 0; i < size; i++) {
-            list.add(iterator.next());
+        if (data.wins != 0) {
+            info.add(Updates.set("wins", data.wins));
         }
-        return list;
+        if (data.kitSelected != (KitStorage.getStorage().defaultKit() != null ? KitStorage.getStorage().defaultKit().id() : 0)) {
+            info.add(Updates.set("kit", data.kitSelected));
+        }
+        return info.toArray(new Bson[0]);
     }
 
     static void update(MongoDBManager manager) {

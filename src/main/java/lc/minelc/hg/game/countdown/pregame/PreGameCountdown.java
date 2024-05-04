@@ -85,6 +85,10 @@ public class PreGameCountdown extends GameCountdown {
         countdown--;
     }
 
+    public void forceStart() {
+        countdown = data.secondsToMakeSound;
+    }
+
     public String getCountdown() {
         return parseTime(countdown);
     }

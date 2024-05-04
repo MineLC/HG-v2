@@ -41,6 +41,7 @@ public final class PregameSidebar implements HgSidebar {
         final String players = String.valueOf(game.getPlayers().size());
         final String maxPlayers = String.valueOf(game.getMapData().getMaxPlayers());
         final String[] parsedLines = new String[lines.length];
+        final String level = String.valueOf(data.level);
 
         for (int i = 0; i < lines.length; i++) {
             parsedLines[i] = lines[i].isEmpty() ? "" : lines[i]
@@ -48,6 +49,7 @@ public final class PregameSidebar implements HgSidebar {
                     .replace("%coin%", lcoins)
                     .replace("%players%", players)
                     .replace("%max%",maxPlayers)
+                    .replace("%level%", level)
                     .replace("%map%", game.getMapData().getName());
         }
         final Sidebar sidebar = new LightSidebarLib().createSidebar();

@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import lc.minelc.hg.messages.Messages;
 import lc.minelc.hg.others.tab.StartTab;
+import lc.minelc.hg.others.top.StartTop;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -13,7 +14,6 @@ import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,21 +21,18 @@ import org.tinylog.Logger;
 
 import com.grinderwolf.swm.api.SlimePlugin;
 
-import lc.lcspigot.commands.CommandStorage;
 import lc.lcspigot.listeners.ListenerRegister;
-import lc.minelc.hg.commands.BasicCommandsRegister;
-import lc.minelc.hg.commands.game.LeaveCommand;
-import lc.minelc.hg.commands.map.MapCreatorCommand;
+import lc.minelc.hg.commands.CommandsRegister;
 import lc.minelc.hg.database.mongodb.MongoDBHandler;
 import lc.minelc.hg.game.GameManagerThread;
 import lc.minelc.hg.game.StartGameData;
 import lc.minelc.hg.game.pregame.StartPreGameData;
 import lc.minelc.hg.listeners.ItemPickupListener;
 import lc.minelc.hg.listeners.PlayerChatListener;
-import lc.minelc.hg.listeners.PlayerConsumeListener;
 import lc.minelc.hg.listeners.PlayerDropitemListener;
 import lc.minelc.hg.listeners.PlayerInteractListener;
 import lc.minelc.hg.listeners.PlayerJoinListener;
+import lc.minelc.hg.listeners.PlayerJoinTabInfoListener;
 import lc.minelc.hg.listeners.PlayerQuitListener;
 import lc.minelc.hg.listeners.PlayerSaturationEvent;
 import lc.minelc.hg.listeners.inventory.PlayerInventoryClickListener;
@@ -43,7 +40,7 @@ import lc.minelc.hg.listeners.pvp.PlayerDeathListener;
 import lc.minelc.hg.listeners.pvp.PlayerRespawnListener;
 import lc.minelc.hg.listeners.pvp.damage.EntityDamageListener;
 import lc.minelc.hg.listeners.pvp.damage.PlayerDamageByPlayerListener;
-import lc.minelc.hg.mapsystem.MapCreatorData;
+import lc.minelc.hg.listeners.pvp.damage.ProjectilHitListener;
 import lc.minelc.hg.mapsystem.StartMaps;
 import lc.minelc.hg.messages.StartMessages;
 import lc.minelc.hg.others.deaths.StartDeaths;
@@ -59,6 +56,12 @@ public final class ArenaHGPlugin extends JavaPlugin {
 
     private static final MongoDBHandler MONGODB = new MongoDBHandler();
     private boolean finallyLoaded = false;
+
+    @Override
+    public void onDisable() {
+        MONGODB.shutdown();
+        new StartTop().saveTops(this);
+    }
 
     @Override
     public void onEnable() {
@@ -78,7 +81,7 @@ public final class ArenaHGPlugin extends JavaPlugin {
         });
 
         try {
-  
+
             new StartMessages().load(this);
             new StartGameData().load(this);
             new StartKits(this).load();
@@ -90,10 +93,11 @@ public final class ArenaHGPlugin extends JavaPlugin {
             new StartEvents(this).load();
             new StartMaps(this, slimePlugin).load();
             new StartTab().load(this);
+            new StartTop().load(this);
 
             final MapInventoryBuilder mapInventoryBuilder = new StartMapInventories().load(this);
 
-            loadCommands();
+            new CommandsRegister().registerCommands(this);
             registerBasicListeners(mapInventoryBuilder);
 
             getServer().getScheduler().runTaskLater(this, () -> {
@@ -124,32 +128,27 @@ public final class ArenaHGPlugin extends JavaPlugin {
         listeners.register(new PlayerDamageByPlayerListener(), true);
         listeners.register(new PlayerInventoryClickListener(), true);
         listeners.register(new PlayerInteractListener(builder), true);
-        listeners.fastListener(AsyncPlayerPreLoginEvent.class, (d) -> {
-            final AsyncPlayerPreLoginEvent event = (AsyncPlayerPreLoginEvent)d;
-            if (!finallyLoaded) {
-                event.setKickMessage("Espera a que el server este cargado");
-                event.setLoginResult(Result.KICK_OTHER);
-                return;
-            }
-        }
-        );
+        listeners.register(new PlayerJoinTabInfoListener(), false);
+
         listeners.register(new PlayerJoinListener(Messages.color(getConfig().getString("join"))), true);
         listeners.register(new PlayerQuitListener(), true);  
         listeners.register(new PlayerDropitemListener(), true);  
         listeners.register(new PlayerChatListener(), true);
         listeners.register(new PlayerSaturationEvent(), true);
-        listeners.register(new PlayerConsumeListener(), true);
         listeners.register(new ItemPickupListener(), true);
+        listeners.register(new ProjectilHitListener(), true);
+        listeners.fastListener(AsyncPlayerPreLoginEvent.class, (d) -> {
+            final AsyncPlayerPreLoginEvent event = (AsyncPlayerPreLoginEvent)d;
+            if (!finallyLoaded) {
+                event.disallow(Result.KICK_OTHER, "Espera a que el server este cargado");
+                return;
+            }
+        });
 
         listeners.cancelEvent(BlockPhysicsEvent.class);
         listeners.cancelEvent(BlockGrowEvent.class);
         listeners.cancelEvent(PlayerArmorStandManipulateEvent.class);
         listeners.cancelEvent(WeatherChangeEvent.class);
-    }
-
-    @Override
-    public void onDisable() {
-        MONGODB.shutdown();
     }
 
     public FileConfiguration loadConfig(final String name) {
@@ -167,12 +166,5 @@ public final class ArenaHGPlugin extends JavaPlugin {
                 saveResource(file, false);
             }
         }
-    }
-
-    private void loadCommands() {
-        CommandStorage.register(new MapCreatorCommand(this, new MapCreatorData()), "map");
-        CommandStorage.register(new LeaveCommand(), "leave");
-
-        new BasicCommandsRegister().registerBasicCommands();
     }
 }

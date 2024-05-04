@@ -19,13 +19,13 @@ public final class InteractAbilities {
     
     private static final ItemFood GOLDEN_APPLE = (ItemFood) Item.REGISTRY.a(322);
 
-    public void soup(final PlayerInteractEvent event, final Material type, final int hearts) {
-        if (type != Material.MUSHROOM_SOUP || event.getPlayer().getHealth() == 20) {
+    public void soup(final PlayerInteractEvent event, final Material type, final float hearts) {
+        if (type != Material.MUSHROOM_SOUP || event.getPlayer().getHealth() == event.getPlayer().getMaxHealth()) {
             return;
         }
-        final double newHealth = event.getPlayer().getHealth() + (hearts << 1);
-        if (newHealth >= 20) {
-            event.getPlayer().setHealth(20);
+        final double newHealth = event.getPlayer().getHealth() + (hearts * 2);
+        if (newHealth >= event.getPlayer().getMaxHealth()) {
+            event.getPlayer().setHealth(event.getPlayer().getMaxHealth());
         } else {
             event.getPlayer().setHealth(newHealth);
         }

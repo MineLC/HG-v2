@@ -6,6 +6,7 @@ import java.util.HashSet;
 import lc.minelc.hg.game.countdown.GameCountdown;
 import lc.minelc.hg.mapsystem.MapData;
 import lc.minelc.hg.others.events.GameEvent;
+import lc.minelc.hg.others.top.KillsTop;
 
 import org.bukkit.GameMode;
 import org.bukkit.World;
@@ -16,7 +17,8 @@ public final class GameInProgress {
     private final MapData data;
 
     private final Set<Player> players = new HashSet<>();
-
+    private final KillsTop gameTop = new KillsTop();
+    
     private World world;
     private GameState state = GameState.NONE;
     private boolean invincibility = true;
@@ -58,6 +60,10 @@ public final class GameInProgress {
 
     public long getStartedTime() {
         return startTime;
+    }
+
+    public KillsTop getTop() {
+        return gameTop;
     }
 
     public Set<Player> getPlayers() {

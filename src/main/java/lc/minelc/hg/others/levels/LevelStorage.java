@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 
 import lc.minelc.hg.database.mongodb.HGPlayerData;
 import lc.minelc.hg.database.mongodb.PlayerDataStorage;
+import lc.minelc.hg.others.top.TopStorage;
 import net.md_5.bungee.api.ChatColor;
 
 public class LevelStorage {
@@ -25,10 +26,12 @@ public class LevelStorage {
 
         victim.deaths++;
         tryGainRewards(death, victim.deaths, victim, player);
+        TopStorage.getStorage().updatePosition(victim.player.getCustomName(), victim.player.getUniqueId(), victim.deaths, TopStorage.getStorage().getDeaths());
 
         if (killer != null) {
             killer.kills++;
             tryGainRewards(kill, killer.kills, killer, player.getKiller());
+            TopStorage.getStorage().updatePosition(killer.player.getCustomName(), killer.player.getUniqueId(), killer.kills, TopStorage.getStorage().getKills());
         }
     }
 
@@ -36,24 +39,25 @@ public class LevelStorage {
         final HGPlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
         data.wins++;
         tryGainRewards(wins, data.wins, data, player);
+        TopStorage.getStorage().updatePosition(data.player.getCustomName(), data.player.getUniqueId(), data.wins, TopStorage.getStorage().getWins());
     }
 
     private void tryGainRewards(final LevelStat levelStat, int stats, final HGPlayerData data, final Player player) {
-        if (stats % levelStat.lcoinsEvery() == 0) {
+        if (levelStat.lcoinsEvery() > 0 && stats % levelStat.lcoinsEvery() == 0) {
             data.coins += levelStat.addlcoins();
             player.sendMessage(buildLcoinsMessage(levelStat));
         }
-
         if (levelStat.levelUpEvery() > 0 && stats % levelStat.levelUpEvery() == 0) {
             player.sendMessage(buildLevelUpMessage(levelStat, data.level, data.level++));
+            TopStorage.getStorage().updatePosition(data.player.getCustomName(), data.player.getUniqueId(), data.level, TopStorage.getStorage().getLevels());
         }
     }
 
     public int getLevels(final HGPlayerData data) {
         int levels = 0;
-        levels += (kill.levelUpEvery() > 0) ? data.kills % kill.levelUpEvery() : 0;
-        levels += (death.levelUpEvery() > 0) ? data.deaths % death.levelUpEvery() : 0;
-        levels += (wins.levelUpEvery() > 0) ? data.wins % wins.levelUpEvery() : 0;
+        levels += (kill.levelUpEvery() > 0) ? data.kills / kill.levelUpEvery() : 0;
+        levels += (death.levelUpEvery() > 0) ? data.deaths / death.levelUpEvery() : 0;
+        levels += (wins.levelUpEvery() > 0) ? data.wins / wins.levelUpEvery() : 0;
         return levels;
     }
 

@@ -2,10 +2,11 @@ package lc.minelc.hg.listeners;
 
 import lc.minelc.hg.database.mongodb.HGPlayerData;
 import lc.minelc.hg.database.mongodb.PlayerDataStorage;
-import lc.minelc.hg.game.GameInProgress;
 import lc.minelc.hg.game.GameStorage;
+import lc.minelc.hg.game.PlayerInGame;
 import lc.minelc.hg.messages.Messages;
-import net.md_5.bungee.api.ChatColor;
+import lc.minelc.hg.others.kits.Kit;
+import lc.minelc.hg.others.kits.KitStorage;
 import lc.lcspigot.listeners.EventListener;
 import lc.lcspigot.listeners.ListenerData;
 import obed.me.lccommons.api.entities.PlayerData;
@@ -39,17 +40,23 @@ public class PlayerChatListener implements EventListener {
         if(!p.hasPermission("minelc.vip")) {
             message = StringUtils.remove(message , '&');
         }
-        final GameInProgress game = GameStorage.getStorage().getGame(p.getUniqueId());
+        final PlayerInGame playerInGame = GameStorage.getStorage().getPlayerInGame(p.getUniqueId());
+        final Kit kit = KitStorage.getStorage().kitsPerId().get(hgPlayerData.kitSelected);
+        final String kitName = (kit == null) ? "Sin kit" : kit.name();
 
+        final String format = "&aNv " + hgPlayerData.level + " &8[" + kitName + "] " + pp.getRankInfo().getRank().getPrefix() + " " + pp.getRankInfo().getUserColor() + p.getName() + " &8» " + pp.getRankInfo().getUserColor() + message;
+
+        if (playerInGame == null) {
+            Messages.sendNoGet(p.getWorld().getPlayers(), format);
+            return;
+        }
         if(p.getGameMode() == GameMode.SPECTATOR){
-            final String spectatorMessage = "&8&lEspectador " + p.getName() + " &8» &f" + message;
-            Messages.sendNoGet(game.getPlayers().stream()
+            final String spectatorMessage = "&8&lEspectador " + format;
+            Messages.sendNoGet(playerInGame.getGame().getPlayers().stream()
                 .filter(player -> player.getGameMode() == GameMode.SPECTATOR)
                 .collect(Collectors.toList()), spectatorMessage);   
             return;
         }
-
-        final String global_format = ChatColor.GREEN + "Nv " + hgPlayerData.level + " " + pp.getRankInfo().getRank().getPrefix() + " &7" + pp.getRankInfo().getUserColor() + p.getName() + " &8» &f" + message;
-        Messages.sendNoGet((game != null) ? game.getPlayers() : p.getWorld().getPlayers(),  global_format);
+        Messages.sendNoGet(playerInGame.getGame().getPlayers(), format);
     }
 }

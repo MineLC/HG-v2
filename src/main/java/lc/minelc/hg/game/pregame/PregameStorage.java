@@ -18,6 +18,7 @@ public record PregameStorage(Location mapLocation, boolean addShopitem) {
         if (addShopitem) {
             inventory.setItem(SpawnStorage.getStorage().getShopItem().slot(), SpawnStorage.getStorage().getShopItem().item());
         }
+        inventory.setItem(SpawnStorage.getStorage().getTopItem().slot(), SpawnStorage.getStorage().getTopItem().item());
     }
 
     static void update(PregameStorage newStorage) {

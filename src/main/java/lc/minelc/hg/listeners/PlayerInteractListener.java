@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -19,7 +18,7 @@ import lc.minelc.hg.game.PlayerInGame;
 import lc.minelc.hg.others.selectgame.MapInventoryBuilder;
 import lc.minelc.hg.others.spawn.SpawnStorage;
 import lc.minelc.hg.others.specialitems.TrackerItem;
-
+import lc.minelc.hg.others.top.TopStorage;
 import lc.lcspigot.listeners.EventListener;
 import lc.lcspigot.listeners.ListenerData;
 
@@ -39,7 +38,7 @@ public final class PlayerInteractListener implements EventListener {
     public void handle(Event defaultEvent) {
         final PlayerInteractEvent event = (PlayerInteractEvent)defaultEvent;
 
-        if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.PHYSICAL
+        if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.PHYSICAL || event.getAction() == Action.LEFT_CLICK_BLOCK
             || event.getPlayer().getGameMode() == GameMode.SPECTATOR) {
             return;
         }
@@ -61,7 +60,9 @@ public final class PlayerInteractListener implements EventListener {
         if (playerInGame != null) {
             if (playerInGame.getGame().getState() == GameState.IN_GAME) {
                 final Material material = event.getItem().getType();
-                handleSpecialItems(event, playerInGame, event.getPlayer(), event.getItem(), event.getItem().getType());
+                if (handleSpecialItems(event, playerInGame, event.getPlayer(), event.getItem(), event.getItem().getType())) {
+                    return;
+                }
                 handleAbilitiesInteract(event, playerInGame, material);
                 return;
             }
@@ -82,6 +83,11 @@ public final class PlayerInteractListener implements EventListener {
         }
         if (type == SpawnStorage.getStorage().getGameItemMaterial()) {
             player.openInventory(mapInventoryBuilder.build());
+            return;
+        }
+        if (type == SpawnStorage.getStorage().getTopMaterial()) {
+            player.openInventory(TopStorage.getStorage().getInventory());
+            return;
         }
     }
 
@@ -92,11 +98,11 @@ public final class PlayerInteractListener implements EventListener {
         }
         for (GameAbility ability : abilities) {
             switch (ability) {
-                case HEARTS_SOUPS_2:
-                    interactAbilities.soup(event, material, 2);
+                case HEARTS_SOUPS_1_5:
+                    interactAbilities.soup(event, material, 1.5F);
                     break;
-                case HEARTS_SOUPS_3:
-                    interactAbilities.soup(event, material, 3);
+                case HEARTS_SOUPS_2_5:
+                    interactAbilities.soup(event, material, 2.5F);
                     break;
                 case COOKIE_STRENGTH:
                     interactAbilities.cookie(event, material);
@@ -115,7 +121,6 @@ public final class PlayerInteractListener implements EventListener {
                 new TrackerItem().handle(player, game.getGame());
                 return true;
             default:
-                event.setUseItemInHand(Result.ALLOW);
                 return false;
         }
     }

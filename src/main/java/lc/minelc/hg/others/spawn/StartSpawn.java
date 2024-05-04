@@ -26,9 +26,10 @@ public class StartSpawn {
 
         final Item shopItem = creator.create("shop-item");
         final Item gameItem = creator.create("game-join");
+        final Item topItem = creator.create("top-item");
         final SpawnShopInventory spawnShopInventory = getSpawnShopInventory();
 
-        SpawnStorage.update(new SpawnStorage(null, shopItem, gameItem, spawnShopInventory));
+        SpawnStorage.update(new SpawnStorage(null, shopItem, gameItem, topItem, spawnShopInventory));
     }
 
     public void loadSpawn() {

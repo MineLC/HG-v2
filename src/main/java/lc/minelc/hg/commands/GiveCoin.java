@@ -24,5 +24,6 @@ public final class GiveCoin implements Command {
             return;
         }
         PlayerDataStorage.getStorage().get(player.getUniqueId()).coins = 100_000;
+        sender.sendMessage("COINS SETEADAS A 100K");
     }
 }

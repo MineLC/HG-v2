@@ -4,3 +4,17 @@ shop-item:
   name: "&aTienda de hg"
   lore:
     - "&7(Clic para entrar)"
+game-join:
+  slot: 1
+  item: "351:11"
+  name: "&eSelector de mapas"
+  lore:
+    - "&7(Clic para entrar)"
+top-item:
+  slot: 8
+  item: "340"
+  name: "&eTops"
+  lore:
+    - "&7Mira los tops de:"
+    - "&6Kills&7, &cMuertes &7y"
+    - "&aVictorias"

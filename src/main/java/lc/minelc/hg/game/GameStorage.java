@@ -29,7 +29,7 @@ public final class GameStorage {
     }
 
     public void join(final String world, final GameInProgress game, final Player player) {
-        playersInGame.put(player.getUniqueId(), new PlayerInGame(game));
+        playersInGame.put(player.getUniqueId(), new PlayerInGame(game, player));
 
         game.getPlayers().add(player);
 
@@ -51,7 +51,6 @@ public final class GameStorage {
     }
 
     public void stop(final GameInProgress game) {
-        System.out.println("se detuvo el juego: " + game.getWorld().getName());
         new GameStartAndStop().stop(game);
     }
 

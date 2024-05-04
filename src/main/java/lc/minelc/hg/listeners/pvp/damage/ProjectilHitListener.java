@@ -5,18 +5,15 @@ import lc.lcspigot.listeners.ListenerData;
 
 import lc.minelc.hg.game.GameStorage;
 import lc.minelc.hg.game.PlayerInGame;
-import lc.minelc.hg.others.abilities.ArrowAbilities;
 import lc.minelc.hg.others.abilities.GameAbility;
 
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
 public class ProjectilHitListener implements EventListener {
-    private final ArrowAbilities arrowAbilities = new ArrowAbilities();
 
     @ListenerData(
         priority = EventPriority.HIGHEST,
@@ -25,17 +22,16 @@ public class ProjectilHitListener implements EventListener {
     @Override
     public void handle(Event defaultEvent) {
         final ProjectileHitEvent event = (ProjectileHitEvent) defaultEvent;
-        if (event.getEntity() instanceof Player) {
+        if (event.getEntity() instanceof Arrow && event.getEntity().getShooter() instanceof Player) {
             handleAbilitiesInteract(event);
         }
     }
 
     private void handleAbilitiesInteract(final ProjectileHitEvent event) {
         Arrow arrow = (Arrow)event.getEntity();
-        LivingEntity shooter = (LivingEntity)arrow.getShooter();
-        Player player = (Player) shooter;
+        Player shooter = (Player)arrow.getShooter();
 
-        final PlayerInGame playerInGame = GameStorage.getStorage().getPlayerInGame(player.getUniqueId());
+        final PlayerInGame playerInGame = GameStorage.getStorage().getPlayerInGame(shooter.getUniqueId());
         if (playerInGame == null) {
             return;
         }
@@ -46,10 +42,10 @@ public class ProjectilHitListener implements EventListener {
         for (GameAbility ability : abilities) {
             switch (ability) {
                 case EXPLODING_ARROWS:
-                    arrowAbilities.arrowExplode(event, playerInGame);
+                    playerInGame.getGame().getWorld().createExplosion(arrow.getLocation(), 2.0F, false);
+                    arrow.remove();
                     break;
                 default:
-                    // No se requiere acción para otras habilidades
                     break;
             }
         }

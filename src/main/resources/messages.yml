@@ -1,8 +1,11 @@
 pregame:
-  waiting-players: "&cEsperando por más jugadores..."
+  waiting-players: "&cEsperando por más jugadores... Mínimo 2"
   start-game: "&aEl juego ha iniciado!"
   start-in: "&aEl juego inicia en %time%"
   full: "&cEste mapa ya está lleno"
+  force-start: "&aEl juego se ha forzado para iniciar"
+  no-perms-force-start: "&cNecesitas tener el rango &a&lVIP &cpara forzar el inicio"
+
 invencibility:
   starting: "%eTodos son invenciblea, recoge items de los cofres para sobrevivir despues."
   start-in: "&aTodos seran  invencibles durante %time% segundos."
@@ -12,14 +15,18 @@ game:
     - ""
     - "&a&l   PARTIDA FINALIZADA"
     - ""
-    - " &f  Duración: &e%time%"
-    - ""
-    - " &f  Ganador: %player%"
+    - " &eDuración: &e%time%"
+    - " &eGanador: &7%player%"
+    - " "
+    - " &eAsesino #1: &7%1%"
+    - " &6Asesino #2: &7%2%"
+    - " &cAsesino #3: &7%3%"
     - ""
 
 kit:
   selected: "&aHas selecionado el kit %name%"
   no-money: "&cNo tienes suficientes lcoins para comprar este kit"
+  no-permission: "&cNo tienes permisos para usar este kit"
 
 level:
   up: "&a¡Has subido de nivel! &7- &6%old% &7-> &e%new%"
@@ -47,7 +54,10 @@ commands:
     - " &b&lComandos públicos &0(/hentai)"
     - " "
     - " &f/level &7- Como funcionan los niveles"
-    - " &f/info &7- Mira tus estadísticas"
+    - " &f/inf,in,i (player) &7- Mira estadísticas"
+    - " &f/ranks &7- Mira los rangos disponibles"
+    - " &f/top &7- Mira los tops"
+    - " &f/start &7- Inicia el juego (Solo &a&lVIPS&7)"
     - " "
     - " &9&lDISCORD: &7http://mine.lc/discord"
   level:
@@ -135,8 +145,7 @@ rush:
     - " &fTodos obtienen salto y velocidad 1 por &61 minuto"
     - " "
 special-items:
-  tracker: "&7Jugador: &a%player%&7. Distancia: &e%distance% &7bloques."
-
+  tracker: "&6Apuntando a &e%player% (%distance% bloques)"
 
 abilities:
   cookie: "&aAhora tienes fuerza 1 por 6s"

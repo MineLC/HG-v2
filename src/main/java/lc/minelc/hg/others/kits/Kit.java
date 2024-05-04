@@ -9,6 +9,7 @@ import net.minecraft.server.v1_8_R3.ItemStack;
 public final record Kit(
     int id,
     String name,
+    String permission,
     Item inventoryItem,
     ItemStack[] armor,
     GameAbility[] gameAbilities,

@@ -54,14 +54,14 @@ public final class StartKits {
                     inventory.setItem(kit.inventoryItem().slot(), kit.inventoryItem().item());
                     kits.put(kit.inventoryItem().slot(), kit);
                 } catch (Exception e) {
-                    System.out.println("Error al cargar un kit: " + e.getMessage());
+                    Logger.error("Error al cargar un kit: " + kitFile);
+                    Logger.error(e);
                 }
             }
             Kit kitPerDefault = (defaultKit != null) ? kitsPerId.get(defaultKit.hashCode()) : null;
             if (kitPerDefault == null && !kitsPerId.isEmpty()) {
                 kitPerDefault = kitsPerId.values().iterator().next();
             }
-        
             KitStorage.update(new KitStorage(new KitInventory(kits, inventory), kitsPerId, kitPerDefault));
         } catch (Exception e) {
             // Imprimir la excepción en la consola
@@ -84,6 +84,7 @@ public final class StartKits {
         return new Kit(
             name.hashCode(),
             name,
+            config.getString("permission"),
             creator.create("inventory-item"),
             createArmor(config, creator), createAbilities(config, name),
             createItems(config),

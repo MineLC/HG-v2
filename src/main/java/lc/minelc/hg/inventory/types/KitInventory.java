@@ -27,7 +27,11 @@ public final class KitInventory {
             return;
         }
         final HGPlayerData data = PlayerDataStorage.getStorage().get(event.getWhoClicked().getUniqueId());
-        if (clickedKit.cost() <= 0 || data.kits.contains(clickedKit.id())) {
+        if (clickedKit.permission() != null && !event.getWhoClicked().hasPermission(clickedKit.permission())) {
+            Messages.send(event.getWhoClicked(), "kit.no-permission");
+            return;
+        }
+        if (clickedKit.cost() <= 0) {
             data.kitSelected = clickedKit.id();
             event.getWhoClicked().sendMessage(Messages.get("kit.selected").replace("%name%", clickedKit.name()));
             return;
@@ -36,7 +40,6 @@ public final class KitInventory {
             Messages.send(event.getWhoClicked(), "kit.no-money");
             return;
         }
-        data.kits.add(clickedKit.id());
         data.kitSelected = clickedKit.id();
         data.coins -= clickedKit.cost();
         event.getWhoClicked().sendMessage(Messages.get("kit.selected").replace("%name%", clickedKit.name()));

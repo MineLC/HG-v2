@@ -5,6 +5,7 @@ import java.util.concurrent.CompletableFuture;
 
 import obed.me.lccommons.api.entities.PlayerData;
 import obed.me.lccommons.api.services.UserProvider;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
@@ -20,6 +21,7 @@ import lc.minelc.hg.others.sidebar.SidebarStorage;
 import lc.minelc.hg.others.sidebar.SidebarType;
 import lc.minelc.hg.others.spawn.SpawnStorage;
 import lc.minelc.hg.others.tab.TabStorage;
+import net.md_5.bungee.api.ChatColor;
 
 public final class PlayerJoinListener implements EventListener {
 
@@ -52,16 +54,18 @@ public final class PlayerJoinListener implements EventListener {
             final HGPlayerData data = MongoDBManager.getManager().getData(player.getUniqueId());
             PlayerData playerData = UserProvider.getInstance().getUserByName(player.getName());
             data.coins = playerData.getCoins();
+            data.player = player;
+
             PlayerDataStorage.getStorage().add(player.getUniqueId(), data);
             SidebarStorage.getStorage().getSidebar(SidebarType.SPAWN).send(player);            
 
-            player.setCustomNameVisible(true);
-            final String name = playerData.getRankInfo().getRank().getPrefix() + " " + player.getName();
-            player.setCustomName(name);
-            player.setDisplayName(name);
             final PlayerData pp = UserProvider.getInstance().getUserCache(player.getName());
-            final String playerInfo = pp.getRankInfo().getRank().getPrefix() + " &7" + pp.getRankInfo().getUserColor() + player.getName();
+            final String playerInfo = (pp.getRankInfo().getRank().getPrefix() + " &7" + pp.getRankInfo().getUserColor() + player.getName()).replace('&', ChatColor.COLOR_CHAR);
+
+            player.setCustomNameVisible(true);
             player.setCustomName(playerInfo);
+            player.setDisplayName(playerInfo);
+
             Messages.sendNoGet(SpawnStorage.getStorage().getPlayers(), playerInfo + joinMessage);
             TabStorage.getStorage().sendPlayerInfo(player, players);
         });

@@ -1,0 +1,29 @@
+inventory:
+  title: "Tops"
+  rows: 1
+
+amount-tops: 50
+
+kill-top:
+  inventory-name: "Top de kills"
+  slot: 1
+  item: "351:14"
+  name: "&6Top de Asesinatos"
+
+death-top:
+  inventory-name: "Top de Muertes"
+  slot: 3
+  item: "351:1"
+  name: "&cTop de Muertes"
+
+win-top:
+  inventory-name: "Top de Victorias"
+  slot: 5
+  item: "351:10"
+  name: "&aTop de Victorias"
+
+level-top:
+  inventory-name: "Top de Niveles"
+  slot: 7
+  item: "351:12"
+  name: "&aTop de Niveles"

@@ -1,12 +1,11 @@
-# TODO Add amount of lcoins to killer and vip points
-
-suffix-if-killer-exist: " por el jugador %d%"
-
+permission: "minelc.vip"
 # When death cause is inexistent
-fallback-message: "%v%&f ha muerto" 
+
+fallback-message: "%v%&f ha muerto por malo" 
+suffix-if-killer-exist: " ha sido &efollado&f por %d%"
 
 deaths:
-  CONTACT: "%v%&f ha muerto"
+  CONTACT: "%v%&f se ha muerto por mucho contacto uwu"
   ENTITY_ATTACK: "%v%&f ha muerto"
   PROJECTILE: "%v%&f ha muerto por un proyectil lanzado"
   SUFFOCATION: "%v%&f ha muerto por ser sofocado"
@@ -28,4 +27,3 @@ deaths:
   FALLING_BLOCK: "%v%&f ha muerto porque un bloque se le cayo encima"
   THORNS: "%v%&f ha muerto "
   CUSTOM: "%v%&f ha muerto en raras circustancias"
-  HEADSHOT_DEATH: "%v% fue headshotted"

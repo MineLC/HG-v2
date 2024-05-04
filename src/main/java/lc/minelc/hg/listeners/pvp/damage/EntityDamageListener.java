@@ -63,7 +63,6 @@ public final class EntityDamageListener implements EventListener {
             }
             return;
         }
-
         if (game.getState() == GameState.END_GAME) {
             event.setCancelled(true);
             if (event.getCause() == DamageCause.VOID) {

@@ -20,7 +20,7 @@ public final class TrackerItem {
             if (otherPlayer.getGameMode() == GameMode.SPECTATOR) {
                 continue;
             }
-            final float distance = (float)otherPlayer.getLocation().distance(player.getLocation());
+            final int distance = (int)otherPlayer.getLocation().distance(player.getLocation());
             player.sendMessage(Messages.get("special-items.tracker")
                 .replace("%distance%", String.valueOf(distance))
                 .replace("%player%", otherPlayer.getName()));

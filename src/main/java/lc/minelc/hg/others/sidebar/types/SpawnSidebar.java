@@ -27,18 +27,18 @@ public final class SpawnSidebar implements HgSidebar {
         final HGPlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
 
         final String coins = String.valueOf(data.coins);
-        final String level = String.valueOf(data.level);
         final String wins =  String.valueOf(data.wins);
         final String deaths = String.valueOf(data.deaths);
         final String kills = String.valueOf(data.kills);
+        final String level = String.valueOf(data.level);
         final String kdr =  (data.deaths == 0) ? String.valueOf(data.kills) : String.valueOf((float)(data.kills / data.deaths));
 
         for (int i = 0; i < lines.length; i++) {
             parsedLines[i] = lines[i].isEmpty() ? "" : lines[i]
                     .replace("%deaths%",deaths)
                     .replace("%coin%", coins)
-                    .replace("%level%", level)
                     .replace("%wins%", wins)
+                    .replace("%level%", level)
                     .replace("%kills%", kills)
                     .replace("%kdr%", kdr);
         }
