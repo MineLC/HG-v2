@@ -20,7 +20,7 @@ public final class InteractAbilities {
     private static final ItemFood GOLDEN_APPLE = (ItemFood) Item.REGISTRY.a(322);
 
     public void soup(final PlayerInteractEvent event, final Material type, final float hearts) {
-        if (type != Material.MUSHROOM_SOUP || event.getPlayer().getHealth() == event.getPlayer().getMaxHealth()) {
+        if (type != Material.MUSHROOM_SOUP) {
             return;
         }
         final double newHealth = event.getPlayer().getHealth() + (hearts * 2);
@@ -30,6 +30,7 @@ public final class InteractAbilities {
             event.getPlayer().setHealth(newHealth);
         }
         event.getPlayer().setFoodLevel(20);
+        event.setCancelled(true);
         deleteOneItem(event.getPlayer().getInventory(), event.getItem());
     }
 
@@ -39,6 +40,7 @@ public final class InteractAbilities {
         }
         event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 120, 1));
         Messages.send(event.getPlayer(), "abilities.cookie");
+        event.setCancelled(true);
         deleteOneItem(event.getPlayer().getInventory(), event.getItem());
     }
 
@@ -48,6 +50,7 @@ public final class InteractAbilities {
         }
         final Player player = event.getPlayer();
         GOLDEN_APPLE.b(CraftItemStack.asNMSCopy(event.getItem()), ((CraftWorld)event.getPlayer().getWorld()).getHandle(), ((CraftPlayer)event.getPlayer()).getHandle());
+        event.setCancelled(true);
         deleteOneItem(player.getInventory(), event.getItem());
     }
 

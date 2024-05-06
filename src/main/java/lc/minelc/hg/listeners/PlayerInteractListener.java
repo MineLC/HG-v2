@@ -100,16 +100,16 @@ public final class PlayerInteractListener implements EventListener {
             switch (ability) {
                 case HEARTS_SOUPS_1_5:
                     interactAbilities.soup(event, material, 1.5F);
-                    break;
+                    return;
                 case HEARTS_SOUPS_2_5:
                     interactAbilities.soup(event, material, 2.5F);
-                    break;
+                    return;
                 case COOKIE_STRENGTH:
                     interactAbilities.cookie(event, material);
                     break;
                 case FAST_GOLDEN_APPLE:
                     interactAbilities.fastGoldenApple(event, material);
-                    break;
+                    return;
                 default:
                     break;
             }

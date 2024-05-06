@@ -1,6 +1,7 @@
 package lc.minelc.hg.inventory.types;
 
 import org.bukkit.GameMode;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -14,6 +15,12 @@ import lc.minelc.hg.others.sidebar.SidebarStorage;
 import lc.minelc.hg.others.sidebar.SidebarType;
 import lc.minelc.hg.others.spawn.SpawnStorage;
 import lc.minelc.hg.others.tab.TabStorage;
+import net.minecraft.server.v1_8_R3.MinecraftServer;
+import net.minecraft.server.v1_8_R3.PacketPlayOutScoreboardTeam;
+import net.minecraft.server.v1_8_R3.ScoreboardTeam;
+import net.minecraft.server.v1_8_R3.ScoreboardTeamBase.EnumNameTagVisibility;
+import obed.me.lccommons.api.entities.PlayerData;
+import obed.me.lccommons.api.services.UserProvider;
 
 public final class MapSelectorInventory {
 
@@ -43,10 +50,14 @@ public final class MapSelectorInventory {
 
             player.setGameMode(GameMode.ADVENTURE);
             player.teleport(PregameStorage.getStorage().mapLocation());
-
+            final PacketPlayOutScoreboardTeam team = getTeamPacket(player);
+    
             for (final Player gamePlayer : game.getPlayers()) {
                 gamePlayer.showPlayer(player);
                 player.showPlayer(gamePlayer);
+                if (team != null) {
+                    ((CraftPlayer)player).getHandle().playerConnection.sendPacket(team);
+                }
             }
             return;
         }
@@ -65,5 +76,16 @@ public final class MapSelectorInventory {
         for (final Player gamePlayer : game.getPlayers()) {
             player.showPlayer(gamePlayer);
         }
+    }
+
+    private PacketPlayOutScoreboardTeam getTeamPacket(final Player player) {
+        final PlayerData data = UserProvider.getInstance().getUserCache(player.getName());
+        if (data == null) {
+            return null;
+        }
+        final ScoreboardTeam team = new ScoreboardTeam(MinecraftServer.getServer().getWorld().scoreboard, player.getName());
+        team.setPrefix(data.getRankInfo().getRank().getPrefix() + data.getRankInfo().getUserColor() + " ");
+        team.b(EnumNameTagVisibility.ALWAYS);
+        return new PacketPlayOutScoreboardTeam(team, 2);
     }
 }

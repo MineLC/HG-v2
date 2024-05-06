@@ -26,6 +26,7 @@ public final class StartCommand implements Command {
             sendWithColor(player, "&eActualmente no estás en ningun juego");
             return;
         }
+
         if (!(game.getCountdown() instanceof PreGameCountdown preGameCountdown)) {
             sendWithColor(player, "&cEl juego no está en etapa de pregame");
             return;

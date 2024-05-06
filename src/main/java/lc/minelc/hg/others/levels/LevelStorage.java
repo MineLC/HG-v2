@@ -26,12 +26,12 @@ public class LevelStorage {
 
         victim.deaths++;
         tryGainRewards(death, victim.deaths, victim, player);
-        TopStorage.getStorage().updatePosition(victim.player.getCustomName(), victim.player.getUniqueId(), victim.deaths, TopStorage.getStorage().getDeaths());
+        TopStorage.getStorage().updatePosition(victim.player, victim.deaths, TopStorage.getStorage().getDeaths());
 
         if (killer != null) {
             killer.kills++;
             tryGainRewards(kill, killer.kills, killer, player.getKiller());
-            TopStorage.getStorage().updatePosition(killer.player.getCustomName(), killer.player.getUniqueId(), killer.kills, TopStorage.getStorage().getKills());
+            TopStorage.getStorage().updatePosition(killer.player, killer.kills, TopStorage.getStorage().getKills());
         }
     }
 
@@ -39,7 +39,7 @@ public class LevelStorage {
         final HGPlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
         data.wins++;
         tryGainRewards(wins, data.wins, data, player);
-        TopStorage.getStorage().updatePosition(data.player.getCustomName(), data.player.getUniqueId(), data.wins, TopStorage.getStorage().getWins());
+        TopStorage.getStorage().updatePosition(data.player, data.wins, TopStorage.getStorage().getWins());
     }
 
     private void tryGainRewards(final LevelStat levelStat, int stats, final HGPlayerData data, final Player player) {
@@ -49,7 +49,7 @@ public class LevelStorage {
         }
         if (levelStat.levelUpEvery() > 0 && stats % levelStat.levelUpEvery() == 0) {
             player.sendMessage(buildLevelUpMessage(levelStat, data.level, data.level++));
-            TopStorage.getStorage().updatePosition(data.player.getCustomName(), data.player.getUniqueId(), data.level, TopStorage.getStorage().getLevels());
+            TopStorage.getStorage().updatePosition(data.player, data.level, TopStorage.getStorage().getLevels());
         }
     }
 

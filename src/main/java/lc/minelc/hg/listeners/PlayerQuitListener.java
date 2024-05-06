@@ -42,6 +42,7 @@ public final class PlayerQuitListener implements EventListener {
             final HGPlayerData data = PlayerDataStorage.getStorage().get(player.getUniqueId());
             PlayerData playerData = UserProvider.getInstance().getUserByName(player.getName());
             playerData.setCoins(data.coins);
+            UserProvider.getInstance().savePlayer(playerData);
             MongoDBManager.getManager().saveData(player.getUniqueId(), data);
         });
     }

@@ -2,6 +2,7 @@ package lc.minelc.hg.others.top;
 
 import java.util.UUID;
 
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -26,26 +27,27 @@ public class TopStorage {
         this.topInventory = inventory;
     }
 
-    public void updatePosition(final String playerName, UUID uuid, final int stat, final PlayerInTop[] data) {
-        for (int i = 0; i < data.length; i++) {
+    public void updatePosition(final Player player, final int stat, final PlayerInTop[] data) {
+        updatePosition(player.getCustomName(), player.getUniqueId(), stat, data, 0);
+    }
+    public void updatePosition(final String playerName, UUID uuid, final int stat, final PlayerInTop[] data, final int startPosition) {
+        for (int i = startPosition; i < data.length; i++) {
             final PlayerInTop playerInTop = data[i];
-
             if (playerInTop == null) {
                 data[i] = new PlayerInTop(playerName, stat, uuid);
                 return;
             }
             if (playerInTop.getUUID().equals(uuid)) {
                 playerInTop.setScore(stat);
+                playerInTop.setPlayerName(playerName);
                 return;
             }
-            if (playerInTop.getScore() <= stat) {
+            if (playerInTop.getScore() < stat) {
                 final UUID oldPlayerUUID = playerInTop.getUUID();
                 final String oldPlayerName = playerInTop.getPlayerName();
                 final int oldPlayerStat = playerInTop.getScore();
-                playerInTop.setPlayerName(playerName);
-                playerInTop.setUUID(uuid);
-                playerInTop.setScore(stat);
-                updatePosition(oldPlayerName, oldPlayerUUID, oldPlayerStat, data);
+                data[i] = new PlayerInTop(playerName, stat, uuid);
+                updatePosition(oldPlayerName, oldPlayerUUID, oldPlayerStat, data, i + 1);
                 return;
             }
         }

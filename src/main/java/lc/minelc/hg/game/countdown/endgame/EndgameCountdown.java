@@ -41,6 +41,8 @@ public class EndgameCountdown extends GameCountdown  {
                 player.setHealth(20);
                 player.setLevel(0);
                 player.setFoodLevel(20);
+                player.getActivePotionEffects().forEach((effect) -> player.removePotionEffect(effect.getType()));
+
             }
             game.setCountdown(null);
             GameStorage.getStorage().stop(game);

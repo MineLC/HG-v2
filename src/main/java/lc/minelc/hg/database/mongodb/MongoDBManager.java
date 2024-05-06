@@ -12,6 +12,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 
+import lc.minelc.hg.others.kits.Kit;
 import lc.minelc.hg.others.kits.KitStorage;
 import lc.minelc.hg.others.levels.LevelStorage;
 
@@ -39,16 +40,18 @@ public final class MongoDBManager {
         data.kills = document.getInteger("kills", 0);
         data.deaths = document.getInteger("deaths", 0);
         data.wins = document.getInteger("wins", 0);
-        data.kitSelected = document.getInteger("kit", 0);
+        data.kitSelected = document.getInteger("kit", KitStorage.getStorage().defaultKit().id());
         data.level = LevelStorage.getStorage().getLevels(data);
-
+        final Kit kit = KitStorage.getStorage().kitsPerId().get(data.kitSelected);
+        if (kit == null) {
+            data.kitSelected = KitStorage.getStorage().defaultKit().id();
+        }
         return data;
     }
 
     public void saveData(final UUID uuid, final HGPlayerData data) {
         final Document query = new Document();
         query.put("_id", uuid);
-
 
         final UpdateOptions options = new UpdateOptions().upsert(true);
         final Bson update = Updates.combine(getInfo(data));
