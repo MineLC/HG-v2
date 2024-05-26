@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
@@ -26,11 +27,11 @@ import lc.minelc.hg.commands.CommandsRegister;
 import lc.minelc.hg.database.mongodb.MongoDBHandler;
 import lc.minelc.hg.game.GameManagerThread;
 import lc.minelc.hg.game.StartGameData;
-import lc.minelc.hg.game.pregame.StartPreGameData;
 import lc.minelc.hg.listeners.ItemPickupListener;
 import lc.minelc.hg.listeners.PlayerChatListener;
 import lc.minelc.hg.listeners.PlayerDropitemListener;
 import lc.minelc.hg.listeners.PlayerInteractListener;
+import lc.minelc.hg.listeners.PlayerInteractWithEntityListener;
 import lc.minelc.hg.listeners.PlayerJoinListener;
 import lc.minelc.hg.listeners.PlayerJoinTabInfoListener;
 import lc.minelc.hg.listeners.PlayerQuitListener;
@@ -88,7 +89,6 @@ public final class ArenaHGPlugin extends JavaPlugin {
             new StartDeaths(this).load(this);
             new StartSpawn(this).loadItems();
             new StartLevels(this).load();
-            new StartPreGameData().loadItems(this);
             new StartSidebar(this).load();
             new StartEvents(this).load();
             new StartMaps(this, slimePlugin).load();
@@ -103,7 +103,6 @@ public final class ArenaHGPlugin extends JavaPlugin {
             getServer().getScheduler().runTaskLater(this, () -> {
                 try {
                     new StartSpawn(this).loadSpawn();
-                    new StartPreGameData().loadMap(this);
                     GameManagerThread.startThread(); 
                     finallyLoaded = true; 
                 } catch (Exception e) {
@@ -136,6 +135,7 @@ public final class ArenaHGPlugin extends JavaPlugin {
         listeners.register(new PlayerChatListener(), true);
         listeners.register(new PlayerSaturationEvent(), true);
         listeners.register(new ItemPickupListener(), true);
+        listeners.register(new PlayerInteractWithEntityListener(), true);
         listeners.register(new ProjectilHitListener(), true);
         listeners.fastListener(AsyncPlayerPreLoginEvent.class, (d) -> {
             final AsyncPlayerPreLoginEvent event = (AsyncPlayerPreLoginEvent)d;
@@ -144,11 +144,11 @@ public final class ArenaHGPlugin extends JavaPlugin {
                 return;
             }
         });
-
         listeners.cancelEvent(BlockPhysicsEvent.class);
         listeners.cancelEvent(BlockGrowEvent.class);
         listeners.cancelEvent(PlayerArmorStandManipulateEvent.class);
         listeners.cancelEvent(WeatherChangeEvent.class);
+        listeners.cancelEvent(HangingBreakByEntityEvent.class);
     }
 
     public FileConfiguration loadConfig(final String name) {

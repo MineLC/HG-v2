@@ -6,11 +6,12 @@ import java.util.Set;
 import java.util.UUID;
 
 import lc.minelc.hg.game.countdown.invencibility.InvencibilityCountdown;
+
 import org.bukkit.GameMode;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import lc.minelc.hg.ArenaHGPlugin;
-import lc.minelc.hg.game.countdown.endgame.EndgameCountdown;
 import lc.minelc.hg.game.countdown.pregame.PreGameCountdown;
 
 public final class GameStorage {
@@ -28,7 +29,7 @@ public final class GameStorage {
         this.invencibilityData = invencibilityData;
     }
 
-    public void join(final String world, final GameInProgress game, final Player player) {
+    public void join(final World world, final GameInProgress game, final Player player) {
         playersInGame.put(player.getUniqueId(), new PlayerInGame(game, player));
 
         game.getPlayers().add(player);
@@ -58,14 +59,14 @@ public final class GameStorage {
         final PlayerInGame playerInGame = playersInGame.remove(player.getUniqueId());
         final Set<Player> players = game.getPlayers();
         players.remove(player);
-        if (game.getCountdown() instanceof EndgameCountdown) {
+        if (game.getState() == GameState.END_GAME) {
             if (players.isEmpty()) {
                 stop(game);
                 return;
             }
             return;
         }
-        if (game.getCountdown() instanceof PreGameCountdown) {
+        if (game.getState() == GameState.PREGAME) {
             if (players.isEmpty()) {
                 game.getMapData().setGame(null);
                 plugin.getServer().getScheduler().cancelTask(game.getCountdown().getId());

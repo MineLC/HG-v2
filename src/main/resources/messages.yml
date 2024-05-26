@@ -11,6 +11,8 @@ invencibility:
   start-in: "&aTodos seran  invencibles durante %time% segundos."
   finished: "&cTodos son vulnerables ahora, que empieze la masacre."
 game:
+  map-loading: "&aEl mapa se está reiniciando, espera un poco"
+  world-dont-exist: "&aEl mapa existe pero el mundo no. Contacta a un administrador"
   win:
     - ""
     - "&a&l   PARTIDA FINALIZADA"

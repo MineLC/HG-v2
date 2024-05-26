@@ -119,9 +119,7 @@ public final class GameInProgress {
         return data.hashCode();
     }
 
-    void setWorld(final World world) {
-        if (this.world == null) {
-            this.world = world;
-        }
+    public void setWorld(final World world) {
+        this.world = world;
     }
 }

@@ -17,6 +17,7 @@ public class StartGameData {
             config.getInt("starting.sound-starting"),
             config.getInt("starting.spam-message"),
             config.getInt("minimum-players-to-start"));
+
         final InvencibilityCountdown.Data invencibilityData = new InvencibilityCountdown.Data(
                 config.getInt("invencibility.waiting-to-invencibility"),
                 config.getInt("invencibility.finish-invencibility-in"),

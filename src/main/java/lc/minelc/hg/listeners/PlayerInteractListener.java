@@ -106,9 +106,18 @@ public final class PlayerInteractListener implements EventListener {
                     return;
                 case COOKIE_STRENGTH:
                     interactAbilities.cookie(event, material);
-                    break;
+                    return;
                 case FAST_GOLDEN_APPLE:
                     interactAbilities.fastGoldenApple(event, material);
+                    return;
+                case TELEPORT_WITH_TORCH:
+                    interactAbilities.teleportWithTorch(event, playerInGame);
+                    return;
+                case HIGH_JUMPS_WITH_FIREWORK:
+                    interactAbilities.jumpWithFireworks(event);
+                    return;
+                case FIRE_THROW:
+                    interactAbilities.firetrow(event);
                     return;
                 default:
                     break;

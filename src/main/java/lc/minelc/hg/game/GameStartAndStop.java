@@ -8,7 +8,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.tinylog.Logger;
 
 import lc.minelc.hg.ArenaHGPlugin;
 import lc.minelc.hg.database.mongodb.PlayerDataStorage;
@@ -28,39 +27,28 @@ final class GameStartAndStop {
 
     private InvencibilityCountdown invencibilityCountdown;
 
-    void start(final ArenaHGPlugin plugin, final GameInProgress game, final InvencibilityCountdown.Data invencibilityData, final String worldName) {
-        MapStorage.getStorage().load(worldName).thenAccept((none) -> {
-            final World world = Bukkit.getWorld(worldName);
-            game.setWorld(world);
+    void start(final ArenaHGPlugin plugin, final GameInProgress game, final InvencibilityCountdown.Data invencibilityData, final World world) {
+        world.getWorldBorder().setCenter(world.getSpawnLocation());
+        world.getWorldBorder().setSize(game.getMapData().getBorderSize());
+        startForPlayers(game);
 
-            game.setEvents(EventStorage.getStorage().createEvents(game));
+        invencibilityCountdown = new InvencibilityCountdown(
+            invencibilityData,
+            game.getPlayers(),
+            () -> {
+                setInvencibility(game,false);
+                game.setEvents(EventStorage.getStorage().createEvents(game));
+                sendEventMessage(game);
+            }
+        );
+        game.setInvincibility(true);
 
-            plugin.getServer().getScheduler().runTask(plugin, () -> {
-                try {
-                    world.getWorldBorder().setCenter(world.getSpawnLocation());
-                    world.getWorldBorder().setSize(game.getMapData().getBorderSize());
-                    startForPlayers(game);
+        game.startTime();
+        game.setState(GameState.IN_GAME);
+        game.setCountdown(null);
 
-                } catch (Exception e) {
-                    Logger.error(e);
-                }
-            });
-
-            //sendEventMessage(game);
-            invencibilityCountdown = new InvencibilityCountdown(
-                    invencibilityData,
-                    game.getPlayers(),
-                    () -> setInvencibility(game,false)
-            );
-            game.setInvincibility(true);
-
-            game.startTime();
-            game.setState(GameState.IN_GAME);
-            game.setCountdown(null);
-
-            final int id = plugin.getServer().getScheduler().runTaskTimer(plugin,invencibilityCountdown, 0, 20).getTaskId();
-            invencibilityCountdown.setId(id);
-        });
+        final int id = plugin.getServer().getScheduler().runTaskTimer(plugin,invencibilityCountdown, 0, 20).getTaskId();
+        invencibilityCountdown.setId(id);
     }
 
     private void setInvencibility(final GameInProgress game, boolean onInvencibility){
@@ -84,12 +72,14 @@ final class GameStartAndStop {
     
                 KitStorage.getStorage().setKit(player, true);   
             }
+            if (player.getAllowFlight()) {
+                player.setAllowFlight(false);
+            }
             player.setGameMode(GameMode.SURVIVAL);
             final EntityLocation spawn = spawns[0];
             player.teleport(new Location(game.getWorld(), spawn.x(), spawn.y(), spawn.z(), spawn.yaw(), spawn.pitch()));
         }
         SidebarStorage.getStorage().getSidebar(SidebarType.IN_GAME).send(game.getPlayers());
-        sendEventMessage(game);
     }
     
     private void sendEventMessage(final GameInProgress game) {
@@ -102,13 +92,17 @@ final class GameStartAndStop {
         Messages.sendNoGet(game.getPlayers(), builder.toString());
     }
 
-    void stop(final GameInProgress game) {       
+    void stop(GameInProgress game) {       
         if (game.getCountdown() != null) {
             Bukkit.getScheduler().cancelTask(game.getCountdown().getId());
         }
-        final World world = game.getWorld();
         game.getMapData().setGame(null);
-        Bukkit.unloadWorld(world, false);
-        System.gc();
+        final String worldName = game.getWorld().getName();
+        Bukkit.unloadWorld(game.getWorld(), false);
+        
+        game = new GameInProgress(game.getMapData());
+        game.setState(GameState.LOADING);
+        final GameInProgress newGame = game;
+        MapStorage.getStorage().load(worldName).thenAccept((none) -> newGame.setState(GameState.NONE));
     }
 }

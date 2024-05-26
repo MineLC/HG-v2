@@ -1,0 +1,33 @@
+name: "Pyro"
+
+inventory-item:
+  slot: 29
+  item: "385"
+  name: "&c&lP&6&lyr&e&lo"
+  lore:
+    - " "
+    - " &eVentajas:"
+    - " "
+    - " &8● &7Espada de hierro &8(Aspecto Ígneo 1)"
+    - " &8● &7Casco y peto de hierro"
+    - " &8● &7Encendedor"
+    - " &8● &73x Chuletas de cerdo"
+    - ""
+    - " &cHabilidad: Lanza fuego"
+    - " &aEfecto: Sin daño de quemadura"
+ #   - ""
+ #   - " &7Kit para &e&lÉLITE"
+abilities:
+  - "HEARTS_SOUPS_1_5"
+  - "FIRE_THROW"
+armor:
+  heltmet: "306"
+  chestplate: "307"
+items:
+  - "267:1:FIRE_ASPECT:1"
+  - "345:1"
+  - "259:1"
+  - "320:3"
+cost: 0
+
+#permission: "minelc.elite"

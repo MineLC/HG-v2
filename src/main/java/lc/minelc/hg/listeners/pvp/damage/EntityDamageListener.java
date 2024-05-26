@@ -10,7 +10,6 @@ import lc.minelc.hg.game.GameInProgress;
 import lc.minelc.hg.game.GameState;
 import lc.minelc.hg.game.GameStorage;
 import lc.minelc.hg.game.PlayerInGame;
-import lc.minelc.hg.game.pregame.PregameStorage;
 import lc.minelc.hg.others.abilities.GameAbility;
 import lc.minelc.hg.others.spawn.SpawnStorage;
 import lc.lcspigot.listeners.EventListener;
@@ -51,7 +50,7 @@ public final class EntityDamageListener implements EventListener {
             }
 
             if (event.getCause() == DamageCause.VOID) {
-                player.teleport(PregameStorage.getStorage().mapLocation());
+                player.teleport(player.getWorld().getSpawnLocation());
             }
             return;
         }

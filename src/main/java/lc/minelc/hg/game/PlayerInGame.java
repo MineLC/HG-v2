@@ -1,6 +1,9 @@
 package lc.minelc.hg.game;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.entity.Player;
 
 import lc.minelc.hg.others.abilities.GameAbility;
@@ -12,6 +15,7 @@ public final class PlayerInGame {
 
     private final GameInProgress game;
     private final Player player;
+    private final Map<GameAbility, Long> cooldownAbilities = new HashMap<>();
 
     @Setter
     private GameAbility[] gameAbilities;
@@ -36,5 +40,21 @@ public final class PlayerInGame {
             }
         }
         return false;
+    }
+
+    public boolean canUseAbility(final GameAbility ability, final int seconds) {
+        final Long cooldown = cooldownAbilities.get(ability);
+        if (cooldown == null) {
+            return true;
+        }
+        if ((System.currentTimeMillis() - cooldown) / 1000 >= seconds) {
+            cooldownAbilities.remove(ability);
+            return true;
+        }
+        return false;
+    }
+
+    public void setCooldown(final GameAbility ability) {
+        cooldownAbilities.put(ability, System.currentTimeMillis());
     }
 }

@@ -1,47 +1,55 @@
 package lc.minelc.hg.inventory.types;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.PlayerInventory;
 
 import lc.minelc.hg.game.GameInProgress;
 import lc.minelc.hg.game.GameState;
 import lc.minelc.hg.game.GameStorage;
-import lc.minelc.hg.game.pregame.PregameStorage;
 import lc.minelc.hg.mapsystem.MapData;
+import lc.minelc.hg.messages.Messages;
 import lc.minelc.hg.others.selectgame.MapSelectorInventoryHolder;
 import lc.minelc.hg.others.sidebar.SidebarStorage;
 import lc.minelc.hg.others.sidebar.SidebarType;
 import lc.minelc.hg.others.spawn.SpawnStorage;
 import lc.minelc.hg.others.tab.TabStorage;
-import net.minecraft.server.v1_8_R3.MinecraftServer;
-import net.minecraft.server.v1_8_R3.PacketPlayOutScoreboardTeam;
-import net.minecraft.server.v1_8_R3.ScoreboardTeam;
-import net.minecraft.server.v1_8_R3.ScoreboardTeamBase.EnumNameTagVisibility;
-import obed.me.lccommons.api.entities.PlayerData;
-import obed.me.lccommons.api.services.UserProvider;
 
 public final class MapSelectorInventory {
 
     public void handle(final MapSelectorInventoryHolder mapSelector, final InventoryClickEvent event) {
         final MapData map = mapSelector.getGame(event.getSlot());
         event.setCancelled(true);
-        if (map != null) {
+        if (map != null && SpawnStorage.getStorage().isInSpawn(event.getWhoClicked())) {
             tryJoinToGame((Player)event.getWhoClicked(), map);
         }
     }
     
     private void tryJoinToGame(final Player player, final MapData map) {
         GameInProgress game = map.getGameInProgress();
-
         if (game == null) {
             game = new GameInProgress(map);
             map.setGame(game);
         }
+        if (game.getState() == GameState.LOADING) {
+            Messages.send(player, "game.map-loading");
+            return;
+        }
+
+        final World world = Bukkit.getWorld(map.toString());
+        if (world == null) {
+            Messages.send(player, "game.world-dont-exist");
+            return;
+        }
+        game.setWorld(world);
+
         if (game.getState() == GameState.PREGAME || game.getState() == GameState.NONE) {
-            PregameStorage.getStorage().send(player);
-            GameStorage.getStorage().join(map.toString(), game, player);
+            setPregameItems(SpawnStorage.getStorage(), player.getInventory());
+
+            GameStorage.getStorage().join(world, game, player);
             SidebarStorage.getStorage().getSidebar(SidebarType.PREGAME).send(player);
 
             TabStorage.getStorage().removeOnePlayer(player, SpawnStorage.getStorage().getPlayers());
@@ -49,15 +57,12 @@ public final class MapSelectorInventory {
             TabStorage.getStorage().sendPlayerInfo(player, game.getPlayers());
 
             player.setGameMode(GameMode.ADVENTURE);
-            player.teleport(PregameStorage.getStorage().mapLocation());
-            final PacketPlayOutScoreboardTeam team = getTeamPacket(player);
+            player.setAllowFlight(true);
+            player.teleport(world.getSpawnLocation());
     
             for (final Player gamePlayer : game.getPlayers()) {
                 gamePlayer.showPlayer(player);
                 player.showPlayer(gamePlayer);
-                if (team != null) {
-                    ((CraftPlayer)player).getHandle().playerConnection.sendPacket(team);
-                }
             }
             return;
         }
@@ -66,7 +71,7 @@ public final class MapSelectorInventory {
         player.setGameMode(GameMode.SPECTATOR);
         player.teleport(game.getWorld().getSpawnLocation());  
 
-        GameStorage.getStorage().join(map.toString(), game, player);
+        GameStorage.getStorage().join(world, game, player);
         SidebarStorage.getStorage().getSidebar(SidebarType.IN_GAME).send(player);
 
         TabStorage.getStorage().removeOnePlayer(player, SpawnStorage.getStorage().getPlayers());
@@ -78,14 +83,10 @@ public final class MapSelectorInventory {
         }
     }
 
-    private PacketPlayOutScoreboardTeam getTeamPacket(final Player player) {
-        final PlayerData data = UserProvider.getInstance().getUserCache(player.getName());
-        if (data == null) {
-            return null;
-        }
-        final ScoreboardTeam team = new ScoreboardTeam(MinecraftServer.getServer().getWorld().scoreboard, player.getName());
-        team.setPrefix(data.getRankInfo().getRank().getPrefix() + data.getRankInfo().getUserColor() + " ");
-        team.b(EnumNameTagVisibility.ALWAYS);
-        return new PacketPlayOutScoreboardTeam(team, 2);
+    private void setPregameItems(final SpawnStorage spawn, final PlayerInventory inventory) {
+        inventory.clear();
+        inventory.setArmorContents(null);
+        inventory.setItem(spawn.getShopItem().slot(), spawn.getShopItem().item());
+        inventory.setItem(spawn.getTopItem().slot(), spawn.getTopItem().item());
     }
 }

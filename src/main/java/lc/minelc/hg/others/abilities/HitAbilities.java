@@ -9,7 +9,7 @@ public final class HitAbilities {
         if (!(event.getDamager() instanceof Player damager)) {
             return;
         }
-        final double newHealth = damager.getHealth() + (event.getDamage() * 0.1D);
+        final double newHealth = damager.getHealth() + (event.getDamage() * 0.2D);
         if (newHealth >= 20) {
             damager.setHealth(20.0D);
             return;

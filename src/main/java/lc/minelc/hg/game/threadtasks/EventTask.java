@@ -16,7 +16,7 @@ public final class EventTask {
 
     public void execute(final MapData map, final long time) {
         final GameInProgress game = map.getGameInProgress();
-        if (game.getState() != GameState.IN_GAME || game.getNextEvent() == null) {
+        if (game.getEvents() == null || game.getState() != GameState.IN_GAME || game.getNextEvent() == null) {
             return;
         }
 
