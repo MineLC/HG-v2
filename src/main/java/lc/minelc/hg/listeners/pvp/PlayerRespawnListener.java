@@ -39,17 +39,17 @@ public final class PlayerRespawnListener implements EventListener {
 
         event.setRespawnLocation(player.getWorld().getSpawnLocation());
         player.setGameMode(GameMode.SPECTATOR);
-
-        if (player.getKiller() != null) {
+        final Player killer = player.getKiller();
+        if (killer != null) {
             if (game.getActiveEvent() != null && game.getActiveEvent().eventType() == GameEventType.FULLHEALTH) {
-                player.getKiller().setHealth(20.0D);
-                player.getKiller().setFoodLevel(20);
-                player.getKiller().playSound(player.getLocation(), Sound.EAT, 1.0f, 1.0f);       
+                killer.setHealth(20.0D);
+                killer.setFoodLevel(20);
+                killer.playSound(killer.getLocation(), Sound.EAT, 1.0f, 1.0f);       
             } else {
-                player.getKiller().playSound(player.getLocation(), Sound.BAT_DEATH, 1.0f, 1.0f);       
+                killer.playSound(killer.getLocation(), Sound.BAT_DEATH, 1.0f, 1.0f);       
             }
         }
-        
+        player.playSound(player.getLocation(), Sound.BAT_DEATH, 1.0f, 1.0f);
         new GameDeath(plugin).death(playerInGame, player, false);
     }
 }

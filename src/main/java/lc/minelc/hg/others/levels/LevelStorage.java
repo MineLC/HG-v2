@@ -1,5 +1,6 @@
 package lc.minelc.hg.others.levels;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import lc.minelc.hg.database.mongodb.HGPlayerData;
@@ -50,6 +51,7 @@ public class LevelStorage {
         if (levelStat.levelUpEvery() > 0 && stats % levelStat.levelUpEvery() == 0) {
             player.sendMessage(buildLevelUpMessage(levelStat, data.level, data.level++));
             TopStorage.getStorage().updatePosition(data.player, data.level, TopStorage.getStorage().getLevels());
+            player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0f, 1.0f);
         }
     }
 
