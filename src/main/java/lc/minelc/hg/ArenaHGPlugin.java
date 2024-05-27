@@ -57,15 +57,18 @@ public final class ArenaHGPlugin extends JavaPlugin {
 
     private static final MongoDBHandler MONGODB = new MongoDBHandler();
     private boolean finallyLoaded = false;
+    private static ArenaHGPlugin instance;
 
     @Override
     public void onDisable() {
         MONGODB.shutdown();
         new StartTop().saveTops(this);
+        instance = null;
     }
 
     @Override
     public void onEnable() {
+        instance = this;
         saveDefaultConfig();
 
         final SlimePlugin slimePlugin = (SlimePlugin) Bukkit.getPluginManager().getPlugin("SlimeWorldManager");
@@ -112,6 +115,10 @@ public final class ArenaHGPlugin extends JavaPlugin {
         } catch (Exception e) {
             Logger.error(e);
         }
+    }
+
+    public static ArenaHGPlugin getInstance() {
+        return instance;
     }
 
     public boolean getLoaded() {

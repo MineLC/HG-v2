@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import org.tinylog.Logger;
+
 import com.grinderwolf.swm.api.SlimePlugin;
 import com.grinderwolf.swm.api.exceptions.CorruptedWorldException;
 import com.grinderwolf.swm.api.exceptions.NewerFormatException;
@@ -43,10 +45,10 @@ public final class MapStorage {
     public CompletableFuture<Void> load(final String worldName) {
         return CompletableFuture.runAsync(() -> {
             try {
-                SlimeWorld world = slimePlugin.loadWorld(loader, worldName, false, PROPERTIES);
+                final SlimeWorld world = slimePlugin.loadWorld(loader, worldName, false, PROPERTIES);
                 slimePlugin.generateWorld(world);
             } catch (UnknownWorldException | CorruptedWorldException | NewerFormatException | WorldInUseException | IOException e) {
-                e.printStackTrace();
+                Logger.error(e);
             }
         });
     }

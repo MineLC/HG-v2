@@ -22,12 +22,14 @@ public final class MapInventoryBuilder {
     private final List<String> gameLore;
     private final StateItem[] states;
     private final String inventoryName, timeLineLore;
+    private final int gamesToShow;
 
-    MapInventoryBuilder(StateItem[] states, List<String> gameLore, String inventoryName, String timeLineLore) {
+    MapInventoryBuilder(StateItem[] states, List<String> gameLore, String inventoryName, String timeLineLore, final int gamesToShow) {
         this.states = states;
         this.gameLore = gameLore;
         this.inventoryName = inventoryName;
         this.timeLineLore = timeLineLore;
+        this.gamesToShow = gamesToShow;
     }
 
     public Inventory build() {
@@ -39,9 +41,15 @@ public final class MapInventoryBuilder {
             inventoryName);
 
         int slot = 0;
+        int games = 0, i = 0;
 
-        for (final MapData map : maps) {
+        while (games < gamesToShow) {
+            final MapData map = maps[i++];
+            if (map.getGameInProgress() == null) {
+                continue;
+            }
             inventory.setItem(slot++, createMapItem(map));
+            games++;
         }
         return inventory;
     }

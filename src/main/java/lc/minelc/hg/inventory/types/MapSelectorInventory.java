@@ -7,10 +7,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.PlayerInventory;
 
+import lc.minelc.hg.ArenaHGPlugin;
 import lc.minelc.hg.game.GameInProgress;
 import lc.minelc.hg.game.GameState;
 import lc.minelc.hg.game.GameStorage;
 import lc.minelc.hg.mapsystem.MapData;
+import lc.minelc.hg.mapsystem.MapStorage;
 import lc.minelc.hg.messages.Messages;
 import lc.minelc.hg.others.selectgame.MapSelectorInventoryHolder;
 import lc.minelc.hg.others.sidebar.SidebarStorage;
@@ -29,21 +31,34 @@ public final class MapSelectorInventory {
     }
     
     private void tryJoinToGame(final Player player, final MapData map) {
-        GameInProgress game = map.getGameInProgress();
-        if (game == null) {
-            game = new GameInProgress(map);
-            map.setGame(game);
+        if (map.getGameInProgress().getState() == GameState.NONE) {
+            final World world = Bukkit.getWorld(map.toString());
+            if (world == null) {
+                map.getGameInProgress().setState(GameState.LOADING);      
+                MapStorage.getStorage().load(map.toString()).thenAccept((none) -> {
+                    map.getGameInProgress().setState(GameState.NONE);
+                    // Sync teleport
+                    ArenaHGPlugin.getInstance().getServer().getScheduler().runTask(ArenaHGPlugin.getInstance(), () -> sendToGame(map, player));
+                });
+                return;
+            }
         }
-        if (game.getState() == GameState.LOADING) {
+
+        if (map.getGameInProgress().getState() == GameState.LOADING) {
             Messages.send(player, "game.map-loading");
             return;
         }
+        sendToGame(map, player);
+    }
 
+    private void sendToGame(final MapData map, final Player player) {
         final World world = Bukkit.getWorld(map.toString());
         if (world == null) {
             Messages.send(player, "game.world-dont-exist");
             return;
         }
+
+        final GameInProgress game = map.getGameInProgress();
         game.setWorld(world);
 
         if (game.getState() == GameState.PREGAME || game.getState() == GameState.NONE) {

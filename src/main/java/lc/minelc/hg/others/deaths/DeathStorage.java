@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import org.bukkit.entity.Player;
 
-import lc.minelc.hg.game.GameInProgress;
 import lc.minelc.hg.game.PlayerInGame;
 import lc.minelc.hg.messages.Messages;
 
@@ -22,26 +21,22 @@ public final class DeathStorage {
     }
 
     public void onDeath(final PlayerInGame game, final Collection<Player> playersToSendMessage, final Player player) {
-        final String message = createMessage(game.getGame(), player, true);
-        if (message != null) {
-            Messages.sendNoGet(playersToSendMessage, message);
-        }
-    }
-
-    private String createMessage(final GameInProgress game, final Player player, boolean finalKill) {
         String deathMessage = (player.getLastDamageCause() == null)
             ? fallbackDeathMessage
             : deathMessages[player.getLastDamageCause().getCause().ordinal()];
         
         if (deathMessage == null) {
-            deathMessage = fallbackDeathMessage;
+            deathMessage = (fallbackDeathMessage == null) ? "%v ha muerto" : fallbackDeathMessage;
         }
         if (player.getKiller() != null) {
-            deathMessage = deathMessage.replace("%v%", player.getCustomName()) + suffixIfPlayerKill.replace("%d%", player.getKiller().getCustomName());
+            deathMessage = deathMessage.replace("%v%", player.getDisplayName()) + 
+                ((suffixIfPlayerKill == null)
+                    ? " por " + player.getKiller().getDisplayName()
+                    : suffixIfPlayerKill.replace("%d%", player.getKiller().getDisplayName()));
         } else {
-            deathMessage = deathMessage.replace("%v%", player.getCustomName());
+            deathMessage = deathMessage.replace("%v%", player.getDisplayName());
         }
-        return deathMessage;
+        Messages.sendNoGet(playersToSendMessage, deathMessage);
     }
 
     static void update(DeathStorage newStorage) {

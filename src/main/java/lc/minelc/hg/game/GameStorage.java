@@ -68,8 +68,8 @@ public final class GameStorage {
         }
         if (game.getState() == GameState.PREGAME) {
             if (players.isEmpty()) {
-                game.getMapData().setGame(null);
                 plugin.getServer().getScheduler().cancelTask(game.getCountdown().getId());
+                game.getMapData().setGame(new GameInProgress(game.getMapData()));
             }
             return;
         }

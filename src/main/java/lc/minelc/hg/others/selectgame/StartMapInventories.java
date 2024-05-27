@@ -7,19 +7,32 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import lc.minelc.hg.ArenaHGPlugin;
+import lc.minelc.hg.game.GameInProgress;
 import lc.minelc.hg.game.GameState;
+import lc.minelc.hg.mapsystem.MapData;
+import lc.minelc.hg.mapsystem.MapStorage;
 import lc.minelc.hg.messages.Messages;
 
 public final class StartMapInventories {
 
     public MapInventoryBuilder load(final ArenaHGPlugin plugin) {
         final FileConfiguration config = plugin.loadConfig("inventories/gameselector");
+        final int maxGames = config.getInt("max-games");
+        final MapData[] maps = MapStorage.getStorage().getMaps();
+
+        final int gamesToShow = (maxGames >= maps.length) ? maps.length : maxGames;
+
+        for (int i = 0; i < gamesToShow; i++) {
+            maps[i].setGame(new GameInProgress(maps[i]));
+        }
 
         return new MapInventoryBuilder(
             getStateItems(config),
             getLore(config),
             Messages.color(config.getString("title")),
-            Messages.color(config.getString("games.time")));
+            Messages.color(config.getString("games.time")),
+            gamesToShow
+        );
     }
 
     private StateItem[] getStateItems(final FileConfiguration config) {

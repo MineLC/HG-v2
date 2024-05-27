@@ -1,4 +1,5 @@
 title: "Seleciona el mapa a jugar"
+max-games: 6
 
 states:
   endgame:

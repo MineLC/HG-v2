@@ -31,12 +31,17 @@ public final class StartDeaths {
         final String[] deathMessages = new String[DamageCause.values().length];
 
         for (final String cause : deathCauses) {
-            final DamageCause damageCause = DamageCause.valueOf(cause);
-            if (damageCause == null) {
+            try {
+                final DamageCause damageCause = DamageCause.valueOf(cause);
+                if (damageCause == null) {
+                    Logger.warn("The damage cause " + cause + " don't exist");
+                    continue;
+                } 
+                deathMessages[damageCause.ordinal()] = Messages.color(config.getString("deaths." + cause));
+            } catch (Exception e) {
                 Logger.warn("The damage cause " + cause + " don't exist");
                 continue;
-            } 
-            deathMessages[damageCause.ordinal()] = Messages.color(config.getString("deaths." + cause));
+            }
         }
         return deathMessages;
     }

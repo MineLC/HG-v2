@@ -5,12 +5,9 @@ import java.util.Collection;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import lc.minelc.hg.messages.Messages;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
-import obed.me.lccommons.api.entities.PlayerData;
-import obed.me.lccommons.api.services.UserProvider;
 
 public final class TabStorage {
 
@@ -46,11 +43,7 @@ public final class TabStorage {
     }
 
     public void sendPlayerInfo(final Player bukkitPlayer, final Collection<Player> players) {
-        final PlayerData pp = UserProvider.getInstance().getUserCache(bukkitPlayer.getName());
-        final String playerInfo = Messages.color(pp.getRankInfo().getRank().getPrefix() + " &7" + pp.getRankInfo().getUserColor() + bukkitPlayer.getName());
-
         final EntityPlayer player = ((CraftPlayer)bukkitPlayer).getHandle();
-        bukkitPlayer.setPlayerListName(playerInfo);
 
         final PacketPlayOutPlayerInfo packet = new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, player);
         final EntityPlayer[] entityPlayers = new EntityPlayer[players.size() + 1];
@@ -61,7 +54,7 @@ public final class TabStorage {
             final EntityPlayer entityPlayer = ((CraftPlayer)otherPlayer).getHandle();
             entityPlayer.playerConnection.sendPacket(packet);
             entityPlayers[i++] = entityPlayer;
-        } 
+        }
         player.playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayers));
     }
 

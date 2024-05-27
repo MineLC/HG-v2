@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import lc.minelc.hg.ArenaHGPlugin;
 import lc.minelc.hg.database.mongodb.PlayerDataStorage;
 import lc.minelc.hg.game.countdown.GameCountdown;
+import lc.minelc.hg.mapsystem.MapData;
 import lc.minelc.hg.mapsystem.MapStorage;
 import lc.minelc.hg.messages.Messages;
 import lc.minelc.hg.others.abilities.GameAbility;
@@ -97,12 +98,31 @@ final class GameStartAndStop {
             Bukkit.getScheduler().cancelTask(game.getCountdown().getId());
         }
         game.getMapData().setGame(null);
+
         final String worldName = game.getWorld().getName();
         Bukkit.unloadWorld(game.getWorld(), false);
-        
-        game = new GameInProgress(game.getMapData());
-        game.setState(GameState.LOADING);
-        final GameInProgress newGame = game;
-        MapStorage.getStorage().load(worldName).thenAccept((none) -> newGame.setState(GameState.NONE));
+
+        final MapData[] maps = MapStorage.getStorage().getMaps();
+        MapData gameToLoad = game.getMapData();
+
+        for (final MapData map : maps) {
+            if (map.equals(game.getMapData())) {
+                continue;
+            }
+            if (map.getGameInProgress() == null) {
+                gameToLoad = map;
+                break;
+            }
+        }
+
+        load(new GameInProgress(gameToLoad), worldName);
+    }
+
+    private void load(final GameInProgress newGame, final String worldName) {
+        newGame.setState(GameState.LOADING);
+        newGame.getMapData().setGame(newGame);
+
+        MapStorage.getStorage().load(worldName)
+            .thenAccept((none) -> newGame.setState(GameState.NONE));
     }
 }
